@@ -1,0 +1,39 @@
+/* Reset */
+@import url(reset.css);
+
+/*-------------------------
+  General definitions */
+
+html {
+  height:100%;
+  overflow-y:scroll;
+}
+
+body {
+  font-family:Arial, sans-serif;
+  font-size:13px;
+  line-height:20px;
+  color:#333; 
+  height:100%; 
+  background:#fff;  
+}
+
+p {
+  padding:0 0 10px 0;
+}
+
+a {
+  text-decoration:none;
+  color:#1f6992;
+}
+
+a:hover {
+  text-decoration:underline;
+}
+
+.clear {
+  clear:both;
+  font-size:0;
+  line-height:0;
+  height:0;
+}
