@@ -4,23 +4,493 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Pulss</title>
-    
     <link href="/css/layout.css" media="screen" rel="stylesheet" type="text/css" />
-    <link href="/css/ui.css" media="screen" rel="stylesheet" type="text/css" />    
+    <!--[if IE 7]>
+      <link href="/css/ie7.css" rel="stylesheet" type="text/css">
+    <![endif]-->
   </head>
   <body>
-    <div class="message">
-      <textarea name="message" id="message" class="UI_Addon_Intellisense UI_Addon_Attachments UI_Addon_Recipients" tabindex="1" default="What's on your mind">What's on your mind</textarea>
+    <div class="wrap">
+      <!--<div>timeline top</div>-->
+      <div class="sub">
+        <div class="primary">
+          <div class="inner">
+            <div class="gradient">
+              <div class="top line">
+                <div class="timeline" onclick="alert('Toggle timeline');">&nbsp;</div>
+                <div class="logo">
+                  <a href="#"><img src="/img/pulss-logo.png" alt="Pulss"/></a>
+                </div>
+              </div>
+              <div class="search line">
+                <div class="ipt">
+                  <div class="text"><input type="text" id="q" name="q" value="" /></div>
+                  <div class="bttn"><div class="loupe">&nbsp;</div></div>
+                  <div class="clear"></div>
+                </div>
+                <div class="chbx">
+                  <input type="checkbox" id="all" name="all" /><label for="all">Search everywhere</label>
+                </div>
+              </div>
+              <div class="nav line">
+                <ul>
+                  <li class="feed active"><a href="#">My Feed</a></li>
+                  <li class="board"><a href="#">Open Board</a></li>
+                  <li class="message"><a href="#">Messages</a></li>
+                  <li class="admin"><a href="#">Administration</a></li>
+                </ul>
+              </div>
+            </div>
+            <div class="nav grp line">
+              <h3>Groups</h3>
+              <!--<li class="preload"><img src="/img/loader-nav-small.gif" /></li> -->
+              <ul id="grp-nav">
+                <li><a href="#">SCRUM im Unternehmen</a></li>
+                <li><a href="#">Produktentwicklung PT2</a></li>
+                <li><a href="#">Softwareentwicklung</a></li>
+                <li><a href="#">Marketing 2.0</a></li>
+                <li><a href="#">Social Media Hype</a></li>
+              </ul>
+              <a class="all" href="#">Show all Groups</a> 
+            </div>
+            <div class="network">
+              <h3>Network</h3>            
+              <ul>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status online"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status online"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status online"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status online"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status online"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status online"></div>
+                </li>           
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status private"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status private"></div>
+                </li>            
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status offline"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status offline"></div>
+                </li>
+                <li>
+                  <div title="Max Mustermann" class="img" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                  <div class="status offline"></div>
+                </li>
+              </ul>
+              <div class="clear h5"></div>
+              <a class="all" href="#">Show all</a>
+            </div>
+          </div>   
+          <!-- background nav -->     
+          <div class="bg"></div>
+          <div class="shadow"></div>
+        </div>
+        <div class="secondary">
+          <div class="inner">
+            <div class="top line">            
+              <div class="first share">
+                <div class="UI_Container" id="share_container" style="display: none;">
+                  <textarea default="What is on your mind?" class="UI_Textarea" id="share_textarea">What is on your mind?</textarea>
+                </div>              
+                <div style="" class="UI_Input_Container" id="share_input_container">
+                  <div class="row title">
+                    <div class="lbl"><label for="share_new_title">Title:</label></div>
+                    <div class="ipt"><input type="text" class="UI_Input" id="share_new_title"/></div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="row text">
+                    <div class="lbl"><label for="share_new_input">Text:</label></div>
+                    <div class="ipt">
+                      <!--<textarea class="UI_Element_Attachments" id="share_new_input" default="What is on your mind?">What is on your mind?</textarea>-->                    
+                      <div class="UI_Textarea UI_Element_Attachments inActive" id="UI_Element_share_new_input"></div>                      
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="row">
+                    <div id="share_new_input_attachments" class="attachment UI_Element_Attachment_Hide">
+                      <div class="lbl">Attach:</div>
+                      <div id="share_new_input_attachment_types" class="types">
+                        <div class="icons">
+                          <a href="#" class="files"></a><a href="#" class="link"></a><a href="#" class="video"></a>
+                        </div>
+                      </div>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="tags">
+                      <div class="lbl"><label for="share_new_input_tags">Tags:</label></div>
+                      <div id="share_tagContainer" class="ipt"><input type="text" class="UI_Input" id="share_new_input_tags"/></div>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="row button">
+                    <div class="button UI_OptionButton UI_Element_Attachment_Hide" id="share_add_entry">
+                      <div class="action">Share</div>
+                      <div class="options"><div class="pointer">&nbsp;</div></div>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="clear"></div>
+                </div>
+                <div class="clear"></div>
+              </div>
+              <div class="second">
+                <div class="submenu">
+                  <h4>This is the very long title of this group</h4>
+                  <ul>
+                    <li class="discuss selected"><a href="#">Discuss</a></li>
+                    <li class="vault"><a href="#">Vault</a></li>
+                    <li class="members"><a href="#">Members</a></li>
+                    <li class="settings"><a href="#">Settings</a></li>
+                  </ul>
+                  <div class="clear"></div>
+                </div>
+              </div>
+              <div class="clear"></div>
+            </div>
+            <!-- count of new entries -->
+            <div class="section" style="display:none;">
+              <div class="first">
+                <div class="block">3 Updates since your last visit</div>
+              </div>
+              <div class="clear"></div>
+            </div>
+            <!-- post entries -->
+            <div class="section line">
+              <div class="first selected">
+                <div class="ref">
+                  <div class="detail"></div>
+                </div>
+                <div class="entry">
+                  <div class="img">
+                    <div class="profile" style="background: url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;" title="Max Mustermann"></div>
+                    <div class="status private">Private</div>                  
+                  </div>
+                  <div class="message">
+                    <div class="author"><a href="#">Tina Roth Eisenberg</a></div>
+                    <div class="recipients">
+                      <div style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;" title="Max Mustermann"></div>
+                      <div style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;" title="Max Mustermann"></div>
+                      <div style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;" title="Max Mustermann"></div>
+                      <div class="more">(And <a href="#">5 others</a>)</div>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="text">
+                      <div class="headline">Pellentesque habitant morbi tristique senec</div>
+                      <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+                      Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. 
+                      Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                      <p>Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, 
+                      condimentum sed, commodo vitae, ornare sit amet, wisi.</p>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="info">
+                      <a class="timestamp" href="#"><abbr title="Mittwoch, 25.Mai 2011 um 14:50">5 minutes ago</abbr></a> &bull; <a class="like" href="#">I like this</a>
+                    </div>
+                  </div>
+                  <div class="clear"></div>
+                </div>
+                <div class="attach">
+                  <div class="item files line">
+                    <div class="icon"></div>
+                    <div class="unit"><a href="#">2011-01-14 Futurezone Bericht.pdf</a> (163.05 kB)</div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="item links line">
+                    <div class="icon"></div>
+                    <div class="unit">
+                      <a href="#">news.orf.at</a><br/>
+                      <span>news.ORF.at: Die aktuellsten Nachrichten auf einen Blick - aus Österreich und der ganzen Welt. In Text, Bild und Video.</span>
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="item videos line">
+                    <div class="icon"></div>
+                    <div class="unit">
+                      <div class="thumb">
+                        <a href="#"><img alt="Timeline Trailer featuring Xavier de le Rue" src="http://b.vimeocdn.com/ts/106/952/106952932_200.jpg"/></a>
+                        <div class="play"><a href="#"><img src="/img/play.png" alt="Play"/></a></div>
+                      </div>
+                      <a href="#">Timeline Trailer featuring Xavier de le Rue</a><br/>
+                      <span>Twice a month TimeLine will get you behind the scenes access to exclusive footage of Xavier de le Rue’s season. 
+                      You’ll discover what it takes to film a big mountain video part for Standard Films and Videograss, to compete on the Freeride 
+                      World Tour and what is happening during trips to Canada, Japan, Norway or Alaska. It will show you the team efforts of passionate 
+                      friends to seek the best lines and best snow and use the best mountains as playground, Guido Perrini as filmer, Tero Repo as photographer 
+                      and Xavier and his friends as riders. Shot mainly on Canon 7d Follow the blog on, timelinemissions.com</span>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="item images">
+                    <div class="icon"></div>
+                    <div class="unit">
+                      <div class="thumb" style="background:url('/img/tmp/dummy100.png') no-repeat 0 0;"></div>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                </div>              
+              </div>
+              <!-- tags and comments of entry -->
+              <div class="second">
+                <div class="tags">
+                  <ul>
+                    <li><a href="#">Scrum</a></li>
+                    <li><a href="#">Vortrag</a></li>
+                    <li><a href="#">Arbeitskreis</a></li>
+                    <li><a href="#">Produktentwicklung</a></li>
+                    <li><a href="#">Produkte</a></li>
+                    <li><a href="#">Entwicklung</a></li>
+                    <li><a href="#">Konstruktion</a></li>
+                    <li class="more"><a href="#">Show all tags ...</a></li>
+                  </ul>
+                  <div class="clear"></div>  
+                </div>
+                <div class="likes like"><a href="#">5 people</a> like this</div>
+                <div class="comments">
+                  <div class="show"><a href="#">Show all 3 comments</a></div>
+                  <div class="items">
+                    <div class="item">
+                      <div class="entry">
+                        <div class="img">
+                          <div title="Adrain Schaffner" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                        </div>
+                        <div class="message">
+                          <div class="author"><a href="#">Adrain Schaffner</a></div>
+                          <span>You’ll discover what it takes to film a big mountain video part for Standard Films and Videograss, to compete on the Freeride World Tour and what is happening during trips to Canada, Japan, Norway or Alaska.</span>
+                          <div class="info"><a class="timestamp" href="#"><abbr title="Mittwoch, 26.Mai 2011 um 13:28">5 minutes ago</abbr></a> &bull; <a href="#">I like this</a> &bull; <a href="#">Write a comment</a></div>
+                          <div class="write" style="display:none;">
+                            <div><input type="text" id="comment" name="comment" value="Write a comment ..."/></div>
+                          </div>
+                        </div>
+                        <div class="clear"></div>
+                      </div>
+                      <div class="subitem">
+                        <div class="entry">
+                          <div class="img">
+                            <div title="Adrain Schaffner" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                          </div>
+                          <div class="message">
+                            <div class="author"><a href="#">Adrain Schaffner</a></div>
+                            <span>Twice a month TimeLine will get you behind the scenes access to exclusive footage of Xavier de le Rue’s season.</span>
+                            <div class="info"><a class="timestamp" href="#"><abbr title="Mittwoch, 26.Mai 2011 um 13:28">5 minutes ago</abbr></a> &bull; <a href="#">I like this</a></div>
+                          </div>
+                          <div class="clear"></div>
+                        </div>                                   
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="entry">
+                        <div class="img">
+                          <div title="Adrain Schaffner" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                        </div>
+                        <div class="message">
+                          <div class="author"><a href="#">Adrain Schaffner</a></div>
+                          <span>You’ll discover what it takes to film a big mountain video part for Standard Films and Videograss, to compete on the Freeride World Tour and what is happening during trips to Canada, Japan, Norway or Alaska.</span>
+                          <div class="info"><a class="timestamp" href="#"><abbr title="Mittwoch, 26.Mai 2011 um 13:28">5 minutes ago</abbr></a> &bull; <a href="#">I like this</a> &bull; <a href="#">Write a comment</a></div>
+                          <div class="write" style="display:none;">
+                            <div><input type="text" id="comment" name="comment" value="Write a comment ..."/></div>
+                          </div>
+                        </div>
+                        <div class="clear"></div>
+                      </div>
+                      <div class="subitem">
+                        <div class="entry">
+                          <div class="img">
+                            <div title="Adrain Schaffner" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                          </div>
+                          <div class="message">
+                            <div class="author"><a href="#">Adrain Schaffner</a></div>
+                            <span>Twice a month TimeLine will get you behind the scenes access to exclusive footage of Xavier de le Rue’s season.</span>
+                            <div class="info"><a class="timestamp" href="#"><abbr title="Mittwoch, 26.Mai 2011 um 13:28">5 minutes ago</abbr></a> &bull; <a href="#">I like this</a></div>
+                          </div>
+                          <div class="clear"></div>
+                        </div>                                   
+                      </div>
+                    </div>
+                    <div class="item">
+                      <div class="entry">
+                        <div class="img">
+                          <div title="Adrain Schaffner" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                        </div>
+                        <div class="message">
+                          <div class="author"><a href="#">Adrain Schaffner</a></div>
+                          <span>You’ll discover what it takes to film a big mountain video part for Standard Films and Videograss, to compete on the Freeride World Tour and what is happening during trips to Canada, Japan, Norway or Alaska.</span>
+                          <div class="info"><a class="timestamp" href="#"><abbr title="Mittwoch, 26.Mai 2011 um 13:28">5 minutes ago</abbr></a> &bull; <a href="#">I like this</a> &bull; <a href="#">Write a comment</a></div>
+                          <div class="write" style="display:none;">
+                            <div><input type="text" id="comment" name="comment" value="Write a comment ..."/></div>
+                          </div>
+                        </div>
+                        <div class="clear"></div>
+                      </div>
+                      <div class="subitem">
+                        <div class="entry">
+                          <div class="img">
+                            <div title="Adrain Schaffner" style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;"></div>
+                          </div>
+                          <div class="message">
+                            <div class="author"><a href="#">Adrain Schaffner</a></div>
+                            <span>Twice a month TimeLine will get you behind the scenes access to exclusive footage of Xavier de le Rue’s season.</span>
+                            <div class="info"><a class="timestamp" href="#"><abbr title="Mittwoch, 26.Mai 2011 um 13:28">5 minutes ago</abbr></a> &bull; <a href="#">I like this</a></div>
+                          </div>
+                          <div class="clear"></div>
+                        </div>                                   
+                      </div>
+                    </div>
+                  </div>
+                  <div class="write">
+                    <div><input type="text" id="comment" name="comment" value="Write a comment ..."/></div>
+                  </div>
+                </div>
+              </div>
+              <div class="clear"></div>
+            </div> 
+            <div class="section line">
+              <div class="first">
+                <div class="ref">
+                  <div class="detail"></div>
+                </div>                           
+                <div class="entry">
+                  <div class="img">
+                    <div class="profile" style="background: url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;" title="Max Mustermann"></div>                                    
+                  </div>
+                  <div class="message">
+                    <div class="author"><a href="#">Tina Roth Eisenberg</a></div>                  
+                    <div class="text">
+                      <div class="headline">Pellentesque habitant morbi tristique senec</div>
+                      <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+                      Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. 
+                      Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                      <p>Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, 
+                      condimentum sed, commodo vitae, ornare sit amet, wisi.</p>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="info">
+                      <a class="timestamp" href="#"><abbr title="Mittwoch, 25.Mai 2011 um 14:50">5 minutes ago</abbr></a> &bull; <a class="like" href="#">I like this</a>
+                    </div>
+                  </div>
+                  <div class="clear"></div>
+                </div>              
+              </div>
+              <div class="second"></div>
+              <div class="clear"></div>
+            </div>
+            <div class="section">
+              <div class="first">
+                <div class="ref">
+                  <div class="detail"></div>
+                </div>
+                <div class="entry">
+                  <div class="img">
+                    <div class="profile" style="background: url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;" title="Max Mustermann"></div>                                    
+                  </div>
+                  <div class="message">
+                    <div class="author"><a href="#">Tina Roth Eisenberg</a></div>
+                    <div class="recipients">
+                      <div style="background:url('/img/tmp/maxmustermann.jpg') no-repeat 0 0;" title="Max Mustermann"></div>
+                      <div class="clear"></div>
+                    </div>
+                    <div class="text">
+                      <div class="headline">Pellentesque habitant morbi tristique senec</div>
+                      <p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. 
+                      Vestibulum tortor quam, feugiat vitae, ultricies eget, tempor sit amet, ante. Donec eu libero sit amet quam egestas semper. 
+                      Aenean ultricies mi vitae est. Mauris placerat eleifend leo.</p>
+                      <p>Quisque sit amet est et sapien ullamcorper pharetra. Vestibulum erat wisi, 
+                      condimentum sed, commodo vitae, ornare sit amet, wisi.</p>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="info">
+                      <a class="timestamp" href="#"><abbr title="Mittwoch, 25.Mai 2011 um 14:50">5 minutes ago</abbr></a> &bull; <a class="like" href="#">I like this</a>
+                    </div>
+                  </div>
+                  <div class="clear"></div>
+                </div>
+                <div class="attach">
+                  <div class="item files line">
+                    <div class="icon"></div>
+                    <div class="unit"><a href="#">2011-01-14 Futurezone Bericht.pdf</a> (163.05 kB)</div>
+                    <div class="clear"></div>
+                  </div>
+                  <div class="item links">
+                    <div class="icon"></div>
+                    <div class="unit">
+                      <a href="#">news.orf.at</a><br/>
+                      <span>news.ORF.at: Die aktuellsten Nachrichten auf einen Blick - aus Österreich und der ganzen Welt. In Text, Bild und Video.</span>
+                    </div>
+                    <div class="clear"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="second"></div>
+              <div class="clear"></div>
+            </div>          
+          </div>
+          <!-- background content -->
+          <div id="bgleft">
+            <div class="white"></div>
+            <div class="shadow"></div>
+          </div>
+        </div>
+        <div class="clear"></div>
+      </div>
     </div>
+  
   
     <script src="/lib/prototype/prototype.js" type="text/javascript" charset="utf-8"></script>
     <script src="/src/pulss.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript">//<![CDATA[
-
+    //<![CDATA[
       document.observe('dom:loaded', function() {
-        Pulss.UI.Controller.init('message');
+          
+          //Pulss.UI.Controller.init('message');
+
+          var count = 0;
+          $$('.secondary .inner').each(function(element){
+              if (count == 0) {
+                  var elWidth = element.getWidth();
+                  if ($('bgleft')) {
+                      $('bgleft').setStyle({ width: ((elWidth * 60) / 100) + 'px' });
+                  }
+
+                  setBgWidth(element);
+              }
+              count++;
+          });    
       });
 
+      function setBgWidth(element) {
+          Event.observe(window, 'resize', function() {
+              var elWidth = element.getWidth();
+              if ($('bgleft')) {
+                  $('bgleft').setStyle({ width: ((elWidth * 60) / 100) + 'px' });
+              }
+          });  
+      }
     //]]>
     </script>
   </body>

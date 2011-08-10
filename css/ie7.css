@@ -1,0 +1,27 @@
+/* Search */
+
+.search .ipt .bttn {
+  margin-top:1px;
+}
+
+.share .button .pointer {
+  background-position: center center;
+}
+
+/* entry author and recipients */
+
+.recipients {
+  float:none;
+}
+
+/* message */
+
+.entry .text {
+  float:none;
+}
+
+/* entry attachments */
+
+.images .unit {
+  position:static;
+}
