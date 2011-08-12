@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <title>Pulss</title>
     <link href="/css/layout.css" media="screen" rel="stylesheet" type="text/css" />
+    <link href="/css/ui.css" media="screen" rel="stylesheet" type="text/css" />
     <!--[if IE 7]>
       <link href="/css/ie7.css" rel="stylesheet" type="text/css">
     <![endif]-->
@@ -21,22 +22,12 @@
                   <a href="/"><img src="/img/logo.png" alt="Pulss"/></a>
                 </div>
               </div>
-              <!-- <div class="search line">
-                <div class="ipt">
-                  <div class="text"><input type="text" id="q" name="q" value="" /></div>
-                  <div class="bttn"><div class="loupe">&nbsp;</div></div>
-                  <div class="clear"></div>
-                </div>
-                <div class="chbx">
-                  <input type="checkbox" id="all" name="all" /><label for="all">Search everywhere</label>
-                </div>
-              </div> -->
               <div class="nav line">
                 <ul>
-                  <li class="feed active"><a href="#"></a></li>
-                  <li class="board"><a href="#"></a><span class="activities">3</span></li>
-                  <li class="groups"><a href="#"></a><span class="activities">7</span></li>
-                  <li class="messages"><a href="#"></a></li>
+                  <li class="feed"><a href="#"></a></li>
+                  <li class="board"><a href="#"></a></li>
+                  <li class="groups active"><a href="#"></a></li>
+                  <li class="messages"><a href="#"></a><span class="activities">7</span></li>
                   <li class="members"><a href="#"></a></li>
                   <li class="settings"><a href="#"></a></li>
                 </ul>
@@ -54,12 +45,18 @@
         </div>
         <div class="secondary">
           <div class="inner">
-            <div class="top line">            
+            <div class="top">            
               <div class="first share">
-                <div class="UI_Container" id="share_container" style="display: none;">
-                  <textarea default="What is on your mind?" class="UI_Textarea" id="share_textarea">What is on your mind?</textarea>
-                </div>              
-                <div style="" class="UI_Input_Container" id="share_input_container">
+                <div class="head">
+                  <div class="logo default group"></div>
+                  <h1>This is the very long title of this group</h1>
+                  <div class="clear"></div>
+                </div>
+                <div class="box" id="share_container">
+                  <h4>Create new post:</h4>
+                  <input value="What is on your mind?" class="UI_Textarea UI_Element_Attachments"/>
+                </div>        
+                <div style="display: none;" class="UI_Input_Container" id="share_input_container">
                   <div class="row title">
                     <div class="lbl"><label for="share_new_title">Title:</label></div>
                     <div class="ipt"><input type="text" class="UI_Input" id="share_new_title"/></div>
@@ -104,7 +101,6 @@
               </div>
               <div class="second">
                 <div class="submenu">
-                  <h4>This is the very long title of this group</h4>
                   <ul>
                     <li class="discuss selected"><a href="#">Discuss</a></li>
                     <li class="vault"><a href="#">Vault</a></li>
@@ -113,11 +109,38 @@
                   </ul>
                   <div class="clear"></div>
                 </div>
+                <div class="divider"><div class="right"></div></div>
+                <div class="search">
+                  <div class="ipt">
+                    <div class="text"><input type="text" id="q" name="q" value="" /></div>
+                    <div class="bttn"><div class="loupe">&nbsp;</div></div>
+                    <div class="clear"></div>
+                  </div>
+                </div>
+                <div class="divider"><div class="right"></div></div>
+              </div>
+              <div class="clear"></div>              
+            </div>
+            <!-- tab -->
+            <div class="section">
+              <div class="first">
+                <ul class="tabs">
+                  <li class="active"><a href="#">All posts</a></li>
+                  <li><a href="#">Only mine</a></li>
+                  <li><a href="#">Only documents</a></li>
+                </ul>
+                <div class="clear"></div>
+              </div>
+              <div class="clear"></div>
+              <div class="divider">
+                <div class="first"><div class="right"></div></div>
+                <div class="second"></div>
+                <div class="clear"></div>
               </div>
               <div class="clear"></div>
             </div>
             <!-- count of new entries -->
-            <div class="section" style="display:none;">
+            <div class="section">
               <div class="first">
                 <div class="block">3 Updates since your last visit</div>
               </div>
@@ -125,7 +148,7 @@
             </div>
             <!-- post entries -->
             <div class="section line">
-              <div class="first selected">
+              <div class="first"><!-- selected -->
                 <div class="ref">
                   <div class="detail"></div>
                 </div>

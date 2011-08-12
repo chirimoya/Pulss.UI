@@ -16,7 +16,7 @@ body {
   line-height:20px;
   color:#333; 
   height:100%; 
-  background:#e8f0f4;  
+  background:#fff;  
 }
 
 p {
@@ -38,6 +38,21 @@ a:hover {
   line-height:0;
   height:0;
 }
+
+h1 {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: bold;
+  padding: 0 0 5px 0;  
+}
+
+h4 {
+  font-size:14px;
+  line-height:20px;
+  font-weight:normal;
+  padding: 0 0 5px 0;
+}
+
 
 /*-------------------------
   Main wrapper */
@@ -72,7 +87,7 @@ a:hover {
 }
 
 .primary .bg {
-  background-color:#072340;
+  background-color:#06223f;
   position:fixed;
   left:0;
   top:0;
@@ -87,25 +102,16 @@ a:hover {
   position:fixed;
   top:0;
   bottom:0;
-  width:9px;
+  width:8px;
   height:100%;
   left:80px;
   z-index:5;
 }
 
 .primary .gradient {
-  background-image: -moz-linear-gradient(
-    center bottom,
-    rgb(4,32,61) 0%,
-    rgb(31,82,134) 100%
-  );
-  background-image: -webkit-gradient(
-      linear,
-      left bottom,
-      left top,
-      color-stop(0, rgb(4,32,61)),
-      color-stop(1, rgb(31,82,134))
-  );
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#205387), to(#06223f));
+  background: -moz-linear-gradient(top, #205387, #06223f);
+  background: linear-gradient(to bottom, #205387, #06223f);
 }
 
 .primary .line {
@@ -151,60 +157,37 @@ a:hover {
 /* Search */
 
 .search {
-  padding:20px 0 0 0;
+  padding:0 0 20px 20px;
 }
 
 .search .ipt {
-  padding:0 0 10px 10px;
 }
 
 .search .ipt .text {
-  /*background: url('/img/search-bg-field.png') no-repeat 0 0;*/
-  width:150px;
+  width:240px;
   float:left;
   height:24px;
 }
 
-/*.search .ipt input {
-  border:0;
-  background:none;
-  width:150px;
-  font-size:12px;
-  padding:0;
-  height:15px;
-  line-height:15px;
-}*/
-
 .search .ipt input {
-  border: 1px solid #333;
+  border: 1px solid #ccc;
   -webkit-border-top-left-radius: 3px;
   -webkit-border-bottom-left-radius: 3px;
   -moz-border-radius-topleft: 3px;
   -moz-border-radius-bottomleft: 3px;
   border-top-left-radius: 3px;
   border-bottom-left-radius: 3px;
-  -moz-box-shadow:inset 2px 2px 5px #999;
-  -webkit-box-shadow:inset 2px 2px 5px #999;
-  box-shadow:inset 2px 2px 5px #999;
   color:#333;
   font-family:Arial, sans-serif;
   font-size:12px;
   height:18px;
   line-height:18px;
   padding:2px 4px 2px 4px;
-  width:140px;
+  width:230px;
 }
 
-/*.search .ipt .bttn {
-  background: url('/img/search-bg-btn.png') no-repeat 0 0;
-  width:24px;
-  height:23px;
-  float:left;
-  cursor:pointer;
-}*/
-
 .search .ipt .bttn {
-  border: 1px solid #333;
+  border: 1px solid #949494;
   -webkit-border-top-right-radius: 3px;
   -webkit-border-bottom-right-radius: 3px;
   -moz-border-radius-topright: 3px;
@@ -292,6 +275,11 @@ a:hover {
   z-index:10; 
 }
 
+.nav li.active {
+  /* width:77px;
+  background:url('/img/pointer-nav-active.png') no-repeat center right; */
+}
+
 .nav li a {
   height:40px;
   width:40px;
@@ -375,8 +363,8 @@ a:hover {
   background:url('/img/shadow-content.png') repeat-y 0 0;
   position:absolute;
   top:0;
-  right:-18px;
-  width:18px;
+  right:-300px;
+  width:300px;
   height:100%;
   z-index:20;
 }
@@ -407,6 +395,83 @@ a:hover {
   height:auto;
   min-height:125px;
 }
+
+.secondary .divider {
+  padding: 0 0 20px 0;
+  position: relative;
+  z-index: 5;
+}
+
+.divider .first {
+  background: url('/img/content-divider.png') no-repeat;
+  height: 1px;
+  position: relative;
+}
+
+.divider .first .right {
+  background: #fff url('/img/content-divider.png') no-repeat right;
+  position: absolute;
+  right: 0;
+  height: 1px;
+  width: 20px;
+}
+
+.divider .second {
+  background: url('/img/content-divider-second.png') no-repeat;
+  height: 2px;
+  position: relative;
+}
+
+.second .divider {
+  background: url('/img/second-divider.png') no-repeat;
+  height: 1px;
+  position: relative;
+  width: 310px;
+}
+
+.second .divider .right {
+  background: #fff url('/img/second-divider.png') no-repeat right;
+  position: absolute;
+  right: 0;
+  height: 1px;
+  width: 40px;
+}
+
+.section .divider .second {
+  padding-top: 0;
+  padding: 0;  
+}
+
+.first .head {
+  padding:10px 0 0 20px;  
+}
+
+.first .box {
+  background-color: #e6e6e6;
+  padding: 5px 19px 10px 10px;
+  margin: 10px 20px 10px 20px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+.head .logo {
+  width:70px;
+  height:70px;
+  margin:0 10px 0 0;
+  padding:0;
+  float:left;
+}
+
+.head h1 {
+  line-height:70px;
+}
+
+.head .logo.default {
+  background:url('/img/icons60.png');
+}
+
+.head .logo.default.group { background-position: 0 -140px; }
 
 .share .row {
   padding:0 0 10px 0;  
@@ -586,16 +651,9 @@ a:hover {
   Sub menu */
 
 .submenu {
-  position:relative;
-  z-index:10; 
-  padding:20px; 
-}
-
-.submenu h4 {
-  font-weight:bold;
-  font-size:14px;
-  line-height:20px; 
-  padding:0 0 10px 0;    
+  position: relative;
+  z-index: 10; 
+  padding: 20px 20px 40px 20px; 
 }
 
 .submenu ul {
@@ -609,19 +667,20 @@ a:hover {
 }
 
 .submenu li a {
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  border-radius: 5px;
-  background: url('/img/icons-submenu.png') no-repeat;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  background: url('/img/icons30.png') no-repeat;
   color: #1F6992;
   display: block;
   font-size: 11px;
   height: 40px;
+  width:40px;
   line-height: 100px;
   position: relative;
   text-align: center;
   text-decoration: none;
-  width:40px;
+  
 }
 
 .submenu li a:hover {
@@ -637,10 +696,15 @@ a:hover {
     font-weight:bold;
 }
 
-.submenu .discuss a  { background-position: 8px 11px; }
-.submenu .vault a    { background-position: -52px 11px; }
-.submenu .members a  { background-position: -112px 11px; }
-.submenu .settings a { background-position: -173px 11px; }
+.submenu .discuss a  { background-position: -80px -280px; }
+.submenu .vault a    { background-position: -80px -320px; }
+.submenu .members a  { background-position: -80px -360px; }
+.submenu .settings a { background-position: -80px -400px; }
+
+.submenu .discuss a:hover, .submenu .discuss.selected a   { background-position: -120px -280px; }
+.submenu .vault a:hover, .submenu .vault.selected a       { background-position: -120px -320px; }
+.submenu .members a:hover, .submenu .members.selected a   { background-position: -120px -360px; }
+.submenu .settings a:hover, .submenu .settings.selected a { background-position: -120px -400px; }
 
 /*-------------------------
   Section */
@@ -889,6 +953,40 @@ a:hover {
   border-radius:5px;
 }
 
+/* filter tabs */
+
+.section .first ul.tabs {
+  padding: 20px 0 0 20px;
+}
+
+.section .first ul.tabs li {
+  float: left;
+  padding: 5px 10px 0 10px;
+  height: 25px;
+  margin-bottom: -1px;
+  border-top: 1px solid #fff;
+}
+
+
+.section .first ul.tabs li a {
+  font-size: 11px;
+  line-height: 20px;
+}
+
+.section .first ul.tabs li.active {  
+  border: 1px solid #ccc;
+  border-bottom: 0;
+  background-color: #fff;
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+  border-radius: 3px 3px 0 0;
+}
+
+.section .first ul.tabs li.active a {
+  color: #333;
+  text-decoration: none;
+}
+
 /* last updates */
 
 .section .first .block {   
@@ -1089,63 +1187,4 @@ a:hover {
 .comments .message .write {
   border-top:0;
   padding:10px 0 0 0;
-}
-
-/*--------------------------------------------------
-  UI Definitions 
---------------------------------------------------*/
-
-.UI_Container {
-  position:absolute;
-  top:20px;
-  left:20px;
-  right:20px;
-  z-index:10;
-  border:1px solid #9c9c9c;
-  -moz-border-radius:5px;
-  -webkit-border-radius:5px;
-  border-radius:5px; 
-  height:40px;
-  padding:10px;
-}
-
-.UI_Container .UI_Textarea {
-  border:0;
-  font-family:Arial, sans-serif;
-  color:#ccc;
-  font-size:14px;
-  line-height:20px;
-  padding:0;
-  margin:0;
-  height:40px;
-  width:100%;
-}
-
-.UI_Input_Container {
-  padding:20px 20px 10px 20px;
-}
-
-.UI_Input {
-  color:#333;
-  font-family:Arial, sans-serif;
-  font-size:12px;
-  height:16px;
-  line-height:16px;
-  padding:0;
-  width:100%;
-  border:0;
-  background:none;
-}
-
-.UI_Element_Attachments {
-  color:#333;
-  font-family:Arial, sans-serif;
-  font-size:12px;
-  line-height:16px;
-  padding:0;
-  width:100%;
-  border:0;
-  background:none;
-  min-height:54px;
-  margin:0;
 }

@@ -1,3 +1,51 @@
 /*-------------------------
   Pulss UI definitions */
 
+.UI_Textarea {
+  border:1px solid #ccc;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  font-family:Arial, sans-serif;
+  color:#ccc;
+  font-size:13px;
+  line-height:18px;
+  padding:3px;
+  margin:0;
+  height: 28px;
+  width:100%;
+}
+
+input.UI_Element_Attachments {
+  background: #fff url('/img/icon-attachments.png') no-repeat center right;
+}
+
+.UI_Input_Container {
+  padding:20px 20px 10px 20px;
+}
+
+.UI_Input {
+  color:#333;
+  font-family:Arial, sans-serif;
+  font-size:12px;
+  height:16px;
+  line-height:16px;
+  padding:0;
+  width:100%;
+  border:0;
+  background:none;
+}
+
+div.UI_Element_Attachments {
+  color:#333;
+  font-family:Arial, sans-serif;
+  font-size:12px;
+  line-height:16px;
+  padding:0;
+  width:100%;
+  border:0;
+  background:none;
+  min-height:54px;
+  margin:0;
+}
+
