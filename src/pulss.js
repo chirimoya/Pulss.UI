@@ -169,7 +169,8 @@ Object.extend(Pulss.UI.Controller, {
     init: function(elementId) {
         var element = Pulss.UI.Composer.Element(elementId);
         this.elements[elementId] = element;
-    },  
+        return this.elements[elementId];
+    },
     getElement: function(elementId) {
         return this.elements[elementId];
     },  
@@ -214,12 +215,21 @@ Object.extend(Pulss.UI.Composer, {
     Element: function(elementId) {
         try{
             if ($(elementId)) {
-                switch ($(elementId).type) {
-                    case Pulss.UI.Composer.Element.BUTTON:
-                        return new Pulss.UI.Element.Button(elementId, {});
-                    case Pulss.UI.Composer.Element.TEXTAREA:
-                        return new Pulss.UI.Element.Textarea(elementId, {});
+                if ($(elementId).type) {
+                    // Element
+                    switch ($(elementId).type) {
+                        case Pulss.UI.Composer.Element.BUTTON:
+                            return new Pulss.UI.Element.Button(elementId, {});
+                        case Pulss.UI.Composer.Element.TEXTAREA:
+                            return new Pulss.UI.Element.Textarea(elementId, {});
+                    } 
+                } else {
+                    // Module
+                    if ($(elementId).hasClassName('UI_Message')) {
+                        return new Pulss.UI.Module.Message(elementId, {});
+                    }
                 }
+                   
             }
         } catch(err) { Pulss.Logger.error(err); }
     }
@@ -228,6 +238,84 @@ Object.extend(Pulss.UI.Composer, {
 Object.extend(Pulss.UI.Composer.Element, {
     BUTTON:     'button',
     TEXTAREA:   'textarea'
+});
+
+Pulss.UI.Module = Class.create({
+    initialize: function(elementId, options) {
+        this.id = elementId;
+        this.element = $(this.id) || null;
+        this.options = { };
+        Object.extend(this.options, options || { });
+    }
+}); 
+
+Pulss.UI.Module.Message = Class.create(Pulss.UI.Module, {
+    initialize: function($super, elementId, options) {
+        $super(elementId, options);
+    
+        this.intellisenseHooks = { };
+
+        this.defaultValue = '';
+    
+        var element = new Element('div', {'id': 'UI_Element_' + this.id});
+        element.hide();
+        
+        Object.extend(this.element, {
+            onclick: function(event) {
+                event = event || window.event;
+                this.placeholder.hide();
+                this.element.show();
+                if (this.subject) {
+                    this.subject.focus();
+                } else {
+                    this.message.onfocus();
+                }
+            }.bind(this)
+        });
+    
+        this.placeholder = Object.extend(this.element, { });
+
+        this.element = element;
+        
+        this.placeholder.insert( { after: this.element } );      
+        
+        if (this.placeholder.hasClassName('UI_Addon_Subject'))
+            this.initializeSubject();
+        
+        this.message = new Element('textarea', { 'class' : 'UI_Textarea' }); 
+        this.element.insert( { bottom: this.message } );
+        this.message = Pulss.UI.Controller.init(this.message.identify());
+                
+        if (this.placeholder.hasClassName('UI_Addon_Attachments'))
+            this.initializeAttachments();
+    
+        if (this.placeholder.hasClassName('UI_Addon_Recipients'))
+            this.initializeRecipients();
+    },
+    initializeSubject: function() {
+        this.subject = new Element('input', { 'class' : 'UI_Subject' });
+        this.element.insert({ bottom: this.subject } );
+    },
+    initializeAttachments: function() {
+        this.attachments = new Object.extend(new Pulss.UI.Element.Textarea.Attachments(), { textarea: this });
+        this.attachments.init();
+    },
+    initializeRecipients: function() {
+        //  TODO
+    },
+    setValue: function(value) {
+        // TODO
+    },
+    getValue: function() {
+        // TODO
+    },
+    reset: function() {
+        // TODO
+    },
+    getAttachments: function() {
+        if (this.attachments)
+            return this.attachments.getAttachments();
+    }
 });
 
 Pulss.UI.Element = Class.create({
@@ -337,12 +425,6 @@ Pulss.UI.Element.Textarea = Class.create(Pulss.UI.Element, {
             
         if (this.element.hasClassName('UI_Addon_Intellisense'))
             this.initializeIntellisense();
-    
-        if (this.element.hasClassName('UI_Addon_Attachments'))
-            this.initializeAttachments();
-    
-        if (this.element.hasClassName('UI_Addon_Recipients'))
-            this.initializeRecipients();
     },
     onfocus: function() {
         if (this.getValue() == this.defaultValue) {
@@ -378,10 +460,6 @@ Pulss.UI.Element.Textarea = Class.create(Pulss.UI.Element, {
         if(this.attachments)
             this.attachments.reset();
     },
-    getAttachments: function() {
-        if (this.attachments)
-            return this.attachments.getAttachments();
-    },
     initializeIntellisense: function() {
     
         this.addIntellisenseHook({ name: 'tags', delimiter: '#', key: 51, source: '/intellisense/tags', element: this.element });
@@ -405,15 +483,10 @@ Pulss.UI.Element.Textarea = Class.create(Pulss.UI.Element, {
                 this.intellisenseHooks[event.keyCode].init();
             }.bind(this), 0);
         }
-    },
-    initializeAttachments: function() {
-        this.attachments = new Object.extend(new Pulss.UI.Element.Textarea.Attachments(), { textarea: this });
-        this.attachments.init();
-    },
-    initializeRecipients: function() {
-      // TODO
     }
 });
+
+
 
 Pulss.UI.Element.Textarea.Attachments = Class.create({
   initialize: function() {

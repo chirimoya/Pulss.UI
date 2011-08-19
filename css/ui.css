@@ -1,7 +1,8 @@
 /*-------------------------
   Pulss UI definitions */
 
-.UI_Textarea {
+.UI_Message,
+.UI_Subject {
   border:1px solid #ccc;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -9,15 +10,38 @@
   font-family:Arial, sans-serif;
   color:#ccc;
   font-size:13px;
-  line-height:18px;
-  padding:3px;
+  line-height:28px;
+  padding:3px 5px 3px 5px;
   margin:0;
   height: 28px;
   width:100%;
+  cursor: text;
 }
 
-input.UI_Element_Attachments {
+.UI_Message.UI_Addon_Attachments {
   background: #fff url('/img/icon-attachments.png') no-repeat center right;
+}
+
+
+.UI_Subject {
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.UI_Textarea {
+  border:1px solid #ccc;
+  background-color: #fff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  font-family:Arial, sans-serif;
+  font-size:13px;
+  line-height:18px;
+  padding:3px 5px 3px 5px;
+  margin:0;
+  width:100%;
+  min-height: 50px;
+  padding-bottom: 30px;
 }
 
 .UI_Input_Container {
@@ -36,7 +60,7 @@ input.UI_Element_Attachments {
   background:none;
 }
 
-div.UI_Element_Attachments {
+.UI_Element_Attachments {
   color:#333;
   font-family:Arial, sans-serif;
   font-size:12px;

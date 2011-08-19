@@ -54,7 +54,7 @@
                 </div>
                 <div class="box" id="share_container">
                   <h4>Create new post:</h4>
-                  <input value="What is on your mind?" class="UI_Textarea UI_Element_Attachments"/>
+                  <div id="message" class="UI_Message UI_Addon_Subject UI_Addon_Tags UI_Addon_Recipients UI_Addon_Attachments">What is on your mind?</div>
                 </div>        
                 <div style="display: none;" class="UI_Input_Container" id="share_input_container">
                   <div class="row title">
@@ -433,7 +433,7 @@
     //<![CDATA[
       document.observe('dom:loaded', function() {
           
-          //Pulss.UI.Controller.init('message');
+          Pulss.UI.Controller.init('message');
 
           var count = 0;
           $$('.secondary .inner').each(function(element){
