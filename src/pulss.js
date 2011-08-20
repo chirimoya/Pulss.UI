@@ -166,8 +166,8 @@ Object.extend(Pulss.UI.Controller, {
         }
         this.elements[elementId].onfocus();
     },  
-    init: function(elementId) {
-        var element = Pulss.UI.Composer.Element(elementId);
+    init: function(elementId, options) {
+        var element = Pulss.UI.Composer.Element(elementId, options);
         this.elements[elementId] = element;
         return this.elements[elementId];
     },
@@ -212,21 +212,21 @@ Object.extend(Pulss.UI.Controller, {
 Pulss.UI.Composer = { };
 
 Object.extend(Pulss.UI.Composer, {
-    Element: function(elementId) {
+    Element: function(elementId, options) {
         try{
             if ($(elementId)) {
                 if ($(elementId).type) {
                     // Element
                     switch ($(elementId).type) {
                         case Pulss.UI.Composer.Element.BUTTON:
-                            return new Pulss.UI.Element.Button(elementId, {});
+                            return new Pulss.UI.Element.Button(elementId, options);
                         case Pulss.UI.Composer.Element.TEXTAREA:
-                            return new Pulss.UI.Element.Textarea(elementId, {});
+                            return new Pulss.UI.Element.Textarea(elementId, options);
                     } 
                 } else {
                     // Module
                     if ($(elementId).hasClassName('UI_Message')) {
-                        return new Pulss.UI.Module.Message(elementId, {});
+                        return new Pulss.UI.Module.Message(elementId, options);
                     }
                 }
                    
@@ -254,8 +254,6 @@ Pulss.UI.Module.Message = Class.create(Pulss.UI.Module, {
         $super(elementId, options);
     
         this.intellisenseHooks = { };
-
-        this.defaultValue = '';
     
         var element = new Element('div', {'id': 'UI_Element_' + this.id});
         element.hide();
@@ -282,9 +280,9 @@ Pulss.UI.Module.Message = Class.create(Pulss.UI.Module, {
         if (this.placeholder.hasClassName('UI_Addon_Subject'))
             this.initializeSubject();
         
-        this.message = new Element('textarea', { 'class' : 'UI_Textarea' }); 
+        this.message = new Element('textarea', { 'class' : 'UI_Textarea' }).update(this.options.defaultValues.message); 
         this.element.insert( { bottom: this.message } );
-        this.message = Pulss.UI.Controller.init(this.message.identify());
+        this.message = Pulss.UI.Controller.init(this.message.identify(), { defaultValue: this.options.defaultValues.message });
                 
         if (this.placeholder.hasClassName('UI_Addon_Attachments'))
             this.initializeAttachments();
@@ -400,7 +398,7 @@ Pulss.UI.Element.Textarea = Class.create(Pulss.UI.Element, {
     
         this.intellisenseHooks = { };
 
-        this.defaultValue = this.element.readAttribute('default');
+        this.defaultValue =  this.options.defaultValue || null;
     
         var cssClasse = 'UI_Textarea ' + this.element.classNames();
         if (this.defaultValue != null && $F(this.element) == this.defaultValue) cssClasse += ' UI_Inactive';
