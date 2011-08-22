@@ -1,15 +1,264 @@
 /*------------------------- 
   Pulss UI definitions */
 
-.UI_Inactive { color: #999; }
-
-.UI_Message, .UI_Subject { border: 1px solid #ccc; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; color:#999; font-size: 13px; line-height: 28px; padding: 3px 5px 3px 5px; margin: 0; height: 28px; width: 100%; cursor: text; }
+.UI_Message, .UI_Subject_Container { border: 1px solid #ccc; background-color: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; color:#999; font-size: 13px; line-height: 28px; padding: 3px 5px 3px 5px; margin: 0; height: 28px; cursor: text; }
 
 .UI_Message.UI_Addon_Attachments { background: #fff url('/img/icon-attachments.png') no-repeat center right; }
 
-.UI_Subject { color: #333; margin: 0 0 10px 0; line-height: 18px; }
+.UI_Message_Container { width: 100%; }
 
-.UI_Textarea { border:1px solid #ccc; background-color: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; font-size: 13px; line-height: 18px; padding: 5px; margin: 0; width: 100%; min-height: 50px; padding-bottom: 30px; }
+.UI_Subject_Container { margin: 0 0 10px 0; }
+
+.UI_Subject { color: #333; border: 0;  margin:0; font-size: 13px; line-height: 18px; width: 100%; }
+
+.UI_Textarea_Container { border:1px solid #ccc; background-color: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 5px; margin: 0 0 10px 0; }
+
+.UI_Textarea { font-size: 13px; line-height: 18px; width: 100%; padding: 0 0 10px 0; min-height: 50px; }
+
+.UI_Attachment_Types { float: right; }
+
+.UI_Attachments { width: 100%; }
+
+.UI_Attachments .item { padding: 0 5px 5px 5px; margin: 0 0 5px 0; }
+
+.UI_Attachments .add { background-color: #ccc; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; padding: 5px 10px 5px 10px; margin: 0 0 10px 0; }
+
+.UI_Attachments .add .head { padding: 2px 0 2px 0; border-bottom: 1px solid #fff; }
+
+.UI_Attachments .item .head { padding:  0 0 10px 0; border-bottom: 1px solid #666; }
+
+.UI_Attachments .item .attachment .head { border: 0; padding: 0; }
+
+.UI_Attachments .add .head .title,
+.UI_Attachments .item .title {
+  font-size: 11px;
+  line-height: 20px;
+}
+
+.UI_Attachments .head .title .icon {
+  background: url('/img/icons16.png') no-repeat;
+  display: block;
+  float: left;
+  height: 20px;
+  margin: 0 2px 0 0;
+  width: 20px;
+}
+
+.UI_Attachments .head .title span.link  { background-position: 0 0; }
+.UI_Attachments .head .title span.files  { background-position: 0 -20px; }
+.UI_Attachments .head .title span.imgs { background-position: -20px -220px; }
+.UI_Attachments .head .title span.video { background-position: -20px -40px; }
+.UI_Attachments .head .title span.date { background-position: -20px -60px; }
+.UI_Attachments .add .title span.link, .primary .body .UI_Attachments .item .title span.link  { background-position: 0 0; }
+.UI_Attachments .add .title span.files, .primary .body .UI_Attachments .docs span.files  { background-position: 0 -20px; }
+.UI_Attachments .add .title span.imgs, .primary .body .UI_Attachments .images span.imgs  { background-position: 0 -220px; }
+.UI_Attachments .add .title span.video, .primary .body .UI_Attachments .item span.video  { background-position: 0 -40px; }
+.UI_Attachments .add .title span.date, .primary .body .UI_Attachments .item span.date  { background-position: 0 -60px; }
+.UI_Attachments .doc span.files  { background-position: -20px -20px; }
+.UI_Attachments .img span.imgs  { background-position: -20px -220px; }
+  
+.UI_Attachments .item .title a,
+.UI_Attachments .item .title a:hover {
+  font-size: 11px;
+  line-height: 20px;
+}
+
+.UI_Attachments .item .head .title,
+.UI_Attachments .item .head .title a,
+.UI_Attachments .item .head .title a:hover {
+  color: #fff;
+}
+
+.UI_Attachments .item .thumbnail {
+  float:left;
+  padding: 0 0.769em 0 0;
+}
+
+.UI_Attachments .item .thumbnail .play {
+  position: absolute;
+  margin: -29px 0 0 5px;
+}
+
+.UI_Attachments .item .description {
+  font-size: 11px;
+  line-height: 15px;
+  color: #999;
+}
+
+.UI_Attachments .add .head a.close { float: right; width: 20px; height: 20px; background: url('/img/icons16.png') no-repeat 0 -180px; }
+
+.UI_Attachments .item a.remove { float: right; width: 20px; height: 20px; background: url('/img/icons16.png') no-repeat 0 -200px; }
+
+.UI_Attachments .item a.remove:hover {
+  background: url('/img/icons16.png') no-repeat -20px -200px;  
+}
+
+.UI_Attachments .item .img a.remove {
+  position: absolute;
+  margin: 0 0 0 -20px;
+  width: 20px;
+  height: 20px;
+  background: #666 url('/img/icons16.png') no-repeat -20px -200px;  
+}
+
+.UI_Attachments .item .img a.remove:hover {
+  background: #666  url('/img/icons16.png') no-repeat -20px -200px;  
+}
+
+.UI_Attachments .add .attachment {
+  font-size: 11px;
+  padding: 10px 0 10px 0;
+  position: relative;
+}
+
+.UI_Attachments .add .attachment.busy {
+  background: #ccc url('/img/loader/small_lightgray.gif') no-repeat center center;
+}
+
+.UI_Attachments .add .attachment.busy div {
+  visibility: hidden;
+}
+
+.UI_Attachments .add .attachment .entry {  padding: 0; position: absolute; right: 80px; left: 0; }
+
+.UI_Attachments .add .attachment .info {
+  font-size: 11px;
+  padding: 0 0 0.273em 0;
+}
+
+.UI_Attachments .add .attachment .action { float: right; }
+
+.UI_Attachments .add .attachment .action.video {
+  top: 3.692em;
+}
+
+.UI_Attachments .add .attachment .action button {
+  border: 1px solid #254f66;
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+  border-radius: 12px;
+  font-size:12px;  
+  font-family:Arial, sans-serif;
+  color: #fff;
+  background-color:#206a93;
+  background-image: -moz-linear-gradient(
+    center top,
+    rgb(129,195,231) 0%,
+    rgb(31,105,146) 100%
+  );
+  background-image: -webkit-gradient(
+      linear,
+      left top,
+      left bottom,
+      color-stop(0, rgb(129,195,231)),
+      color-stop(1, rgb(31,105,146))
+  );
+  padding:3px 20px 3px 20px;
+  text-align:center;
+  cursor:pointer;
+  height:22px;
+  line-height:16px;
+}
+
+.UI_Attachments .add .attachment input {
+  font-size: 12px;
+  height: 22px;
+  width: 100%;
+  margin:0;
+  padding: 0 5px 0 5px; 
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border: 0;
+}
+
+.UI_Attachments .add .attachment .entry.video input {
+  margin: 0 0 5px 0;
+}
+
+.UI_Attachments .add .attachment .entry.code {
+  width: 450px;
+  background-color: #fff;
+  border: 0;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  padding: 5px;
+}
+
+.UI_Attachments .add .attachment .entry.code textarea {
+  font-size:11px;
+  font-family: 'Arial', 'SanSerif';
+  width: 440px;
+  width: 100%;
+  height: 60px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.UI_Attachments .item .attachment .images {
+  padding: 0;
+  border-bottom: 1px solid #666;
+}
+
+.UI_Attachments .item .attachment .img {
+  float: left;  
+  padding: 0 10px 10px 0;
+}
+
+.UI_Attachments .item .attachment .img img {
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.UI_Attachments .item .attachment .docs {
+  padding: 10px 0 10px 0;
+  border-bottom: 1px solid #666;
+}
+
+.UI_Attachments .item .attachment .doc { 
+  color: #fff;  
+}
+
+.UI_Attachments .item .attachment .doc span {
+  font-size: 11px;
+  line-height: 15px;
+  color: #999;
+}
+
+.UI_Attachments .item .attachment a,
+.UI_Attachments .item .attachment a:hover {
+  font-size: 11px;
+  line-height: 11px;
+  color: #fff;
+}
+
+
+.UI_Recipients { border: 0; width: 150px; }
+
+.UI_Recipient { float: left; background-color: #1f6992; height: 20px; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; font-size:11px; line-height: 20px; padding: 0 2px 0 10px; margin:0 5px 5px 0; color: #fff; cursor: default; }
+
+.UI_Recipient a.remove { float: right; width: 20px; height: 20px; background: url('/img/icons16.png') no-repeat -40px -180px; margin:0 0 0 5px; -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=50)"; filter: alpha(opacity=50); -moz-opacity:0.5; -khtml-opacity: 0.5; opacity: 0.5; }
+
+.UI_Recipient.r_g { background: #1f6992 url('/img/icons16.png') no-repeat -35px -300px; padding-left:30px; }
+
+.UI_Recipient.UI_Selected { background-color: #666; }
+
+.UI_Recipients_Box { border:1px solid #ccc; background-color: #fff; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 5px; margin: 0 0 10px 0; position: relative; z-index: 15; }
+
+.UI_Recipients.UI_Inactive { color: #1f6992; cursor: pointer; font-size: 11px; background: url('/img/icons16.png') no-repeat -20px -283px; padding: 0 0 0 20px; }
+
+.UI_Recipients_Search_Results, .UI_Recipients_Advice { position: absolute; background-color: #ccc; z-index: 12; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; padding: 5px 3px 3px 3px; margin: -13px 0 0 0; width: 250px; }
+
+.UI_Recipients_Search_Results .ui-menu-item, .UI_Recipients_Advice .ui-menu-item { padding: 2px 5px 2px 3px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; cursor: pointer; }
+
+.UI_Recipients_Search_Results .ui-state-active, .UI_Recipients_Advice .ui-state-active { background-color: #e6e6e6; }
+
+.UI_Recipients_Search_Results a:hover, .UI_Recipients_Advice a:hover { text-decoration: none; }
+
+.UI_Recipients_Advice span { padding: 2px 5px 2px 3px; font-size: 11px; color: #666; }
 
 .UI_Input_Container { padding: 20px 20px 10px 20px; }
 
@@ -17,3 +266,4 @@
 
 .UI_Element_Attachments { color: #333; font-size: 12px; line-height: 16px; padding: 0; width: 100%; border: 0; background: none; min-height: 54px; margin: 0; }
 
+.UI_Inactive { color: #999; }

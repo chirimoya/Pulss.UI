@@ -12,7 +12,7 @@
   
     <title>Pulss</title>
         
-    <meta name="description" content="Pulss - The enterprise social net-/frame-work!">
+    <meta name="description" content="Pulss - The social enterprise net-/frame-work!">
     <meta name="author" content="Thomas Schedler">
   
     <!-- Mobile viewport optimized: j.mp/bplateviewport -->
@@ -407,10 +407,10 @@
     <script>window.Prototype || document.write('<script src="/lib/prototype/prototype.js">\x3C/script>')</script>
 
     <!-- scripts concatenated and minified via ant build script-->
-    <script src="/src/pulss.js"></script>    
+    <script src="/lib/scripty2/s2.js"></script>
+    <script src="/src/pulss.js"></script>
     <script src="/lib/h5bp/plugins.js"></script>
     <!-- end scripts-->
-    
     
     <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
           chromium.org/developers/how-tos/chrome-frame-getting-started -->
@@ -422,7 +422,7 @@
     <script>
         document.observe('dom:loaded', function() {
             
-            Pulss.UI.Controller.init('message', { defaultValues: { subject: 'Title ...', message: 'Message ...'  } });
+            Pulss.UI.Controller.init('message', { defaultValues: { subject: 'Title ...', message: 'Message ...', recipient: 'Add person or group' } });
         
             var count = 0;
             $$('.secondary .inner').each(function(element){

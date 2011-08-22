@@ -1,6 +1,6 @@
 var Pulss = { version: '0.0.1' };
 
-Pulss.Logger = { hasConsole: (typeof(console) != 'undefined') };
+Pulss.Logger = { hasConsole: (typeof(window.console) != 'undefined') };
 
 Object.extend(Pulss.Logger, { 
     debug: function(msg) {
@@ -222,6 +222,12 @@ Object.extend(Pulss.UI.Composer, {
                             return new Pulss.UI.Element.Button(elementId, options);
                         case Pulss.UI.Composer.Element.TEXTAREA:
                             return new Pulss.UI.Element.Textarea(elementId, options);
+                        case Pulss.UI.Composer.Element.TEXT:
+                            if ($(elementId).hasClassName('UI_Recipients')) {
+                                return new Pulss.UI.Element.Recipients(elementId, options);
+                            } else {
+                                return new Pulss.UI.Element.Text(elementId, options);
+                            }
                     } 
                 } else {
                     // Module
@@ -237,7 +243,8 @@ Object.extend(Pulss.UI.Composer, {
 
 Object.extend(Pulss.UI.Composer.Element, {
     BUTTON:     'button',
-    TEXTAREA:   'textarea'
+    TEXTAREA:   'textarea',
+    TEXT:       'text'
 });
 
 Pulss.UI.Module = Class.create({
@@ -255,7 +262,7 @@ Pulss.UI.Module.Message = Class.create(Pulss.UI.Module, {
     
         this.intellisenseHooks = { };
     
-        var element = new Element('div', {'id': 'UI_Element_' + this.id});
+        var element = new Element('div', { 'id': 'UI_Element_' + this.id, 'class': 'UI_Message_Container' });
         element.hide();
         
         Object.extend(this.element, {
@@ -264,7 +271,7 @@ Pulss.UI.Module.Message = Class.create(Pulss.UI.Module, {
                 this.placeholder.hide();
                 this.element.show();
                 if (this.subject) {
-                    this.subject.focus();
+                    this.subject.onfocus();
                 } else {
                     this.message.onfocus();
                 }
@@ -280,26 +287,55 @@ Pulss.UI.Module.Message = Class.create(Pulss.UI.Module, {
         if (this.placeholder.hasClassName('UI_Addon_Subject'))
             this.initializeSubject();
         
-        this.message = new Element('textarea', { 'class' : 'UI_Textarea' }).update(this.options.defaultValues.message); 
-        this.element.insert( { bottom: this.message } );
+        
+        this.messageContainer = new Element('div', { 'class': 'UI_Textarea_Container clearfix' });
+        this.message = new Element('textarea', { 'class': 'UI_Textarea', 'id': this.element.id + '_textarea' }).update(this.options.defaultValues.message); 
+        this.element.insert( { bottom: this.messageContainer.update(this.message) } );
         this.message = Pulss.UI.Controller.init(this.message.identify(), { defaultValue: this.options.defaultValues.message });
-                
+        
+        if (this.placeholder.hasClassName('UI_Addon_Tags'))
+            this.initializTags();
+        
         if (this.placeholder.hasClassName('UI_Addon_Attachments'))
             this.initializeAttachments();
-    
+        
         if (this.placeholder.hasClassName('UI_Addon_Recipients'))
             this.initializeRecipients();
+        
+        delete this.messageContainer;
     },
     initializeSubject: function() {
-        this.subject = new Element('input', { 'class' : 'UI_Subject' });
-        this.element.insert({ bottom: this.subject } );
+        this.subject = new Element('input', { 'class': 'UI_Subject', 'id': this.element.id + '_subject', 'type': 'text', 'value': this.options.defaultValues.subject });
+        this.element.insert({ bottom: new Element('div', { 'class': 'UI_Subject_Container' }).update(this.subject) } );
+        this.subject = Pulss.UI.Controller.init(this.subject.identify(), { defaultValue: this.options.defaultValues.subject });
+    },
+    initializTags: function() {
+        this.messageContainer.insert( { bottom: new Element('div', { 'class': 'UI_Attachment_Types UI_Element_Attachment_Hide clearfix', 'id': this.element.id + '_tags' } ) } );
+        
     },
     initializeAttachments: function() {
-        this.attachments = new Object.extend(new Pulss.UI.Element.Textarea.Attachments(), { textarea: this });
+        this.messageContainer.insert( { bottom: new Element('div', { 'class': 'UI_Attachment_Types UI_Element_Attachment_Hide clearfix', 'id': this.element.id + '_attachment_types' } ) } );
+        this.element.insert( { bottom: new Element('div', { 'class': 'UI_Attachments', 'id': this.element.id + '_attachments' } ) } );
+        this.attachments = new Object.extend(new Pulss.UI.Element.Textarea.Attachments(), { baseId: this.element.id });
         this.attachments.init();
     },
     initializeRecipients: function() {
-        //  TODO
+        this.recipients = new Element('input', { 'class': 'UI_Recipients', 'id': this.element.id + '_recipients', 'type': 'text', 'value': this.options.defaultValues.recipient });
+        this.element.insert({ bottom: new Element('div', { 'class': 'UI_Recipient_Container UI_Element_Attachment_Hide' }).update(this.recipients) } );
+        this.recipients = Pulss.UI.Controller.init(this.recipients.identify(), { 
+            requestUrl: '/services/ui/search-recipients', 
+            params: { },  
+            baseId: this.element.id,
+            selected: this.recipientSelected.bind(this),
+            defaultValue: this.options.defaultValues.recipient,
+            groups: '[{"id":"1","title":"Everyone in this group"}]'.evalJSON()
+        });
+    },
+    recipientSelected: function() {
+        // TODO
+    },
+    recipientRow: function() {
+        // TODO
     },
     setValue: function(value) {
         // TODO
@@ -322,6 +358,17 @@ Pulss.UI.Element = Class.create({
         this.element = $(this.id) || null;
         this.options = { };
         Object.extend(this.options, options || { });
+        
+        Object.extend(this.element, {
+            onfocus: function(event) {
+                event = event || window.event;
+                this.onfocus(event);
+            }.bind(this),
+            onblur: function(event) {
+                event = event || window.event;
+                this.onblur(event);
+            }.bind(this)
+        });
     },
     setValue: function(value) {
         this.element.value = value;
@@ -370,7 +417,7 @@ Pulss.UI.Element.Datetime = Class.create(Pulss.UI.Element, {
         this.hour = new Element('select');
 
         this.hour.insert(new Element('option', {'value': ''}).update('--'));
-        for (h = 0; h <= 23; h++) {
+        for (var h = 0; h <= 23; h++) {
             hValue = (h < 10) ? '0' + h : h;
             this.hour.insert(new Element('option', {'value': hValue}).update(hValue));
         }
@@ -381,7 +428,7 @@ Pulss.UI.Element.Datetime = Class.create(Pulss.UI.Element, {
         this.minute = new Element('select');
 
         this.minute.insert(new Element('option', {'value': ''}).update('--'));
-        for (m = 0; m < 60; m = m + 5) {
+        for (var m = 0; m < 60; m = m + 5) {
             mValue = (m < 10) ? '0' + m : m;
             this.minute.insert(new Element('option', {'value': mValue}).update(mValue));
         }
@@ -389,6 +436,424 @@ Pulss.UI.Element.Datetime = Class.create(Pulss.UI.Element, {
         time.insert(this.minute);
 
         this.element.insert(time);
+    }
+});
+
+Pulss.UI.Element.Recipients = Class.create(Pulss.UI.Element, {
+    initialize: function($super, elementId, options) {
+        $super(elementId, Pulss.UI.Element.Recipients.DEFAULT_OPTIONS);    
+        Object.extend(this.options, options || { });
+        
+        this.recipients = $H();
+        
+        this.menu = new S2.UI.Menu();
+        this.menu.options.closeOnOutsideClick = false;
+        this.menu.observe('ui:menu:selected', this.selected.bind(this));
+        
+        this.groups = new S2.UI.Menu();
+        this.groups.options.closeOnOutsideClick = false;
+        this.groups.observe('ui:menu:selected', this.selectedGroup.bind(this));
+        
+        this.options.groups.each(function(group){
+            var li = new Element('li', { 'class' : 'item' }).update(new Element('div', { 'class' : 'title' }).update('<a href="#" onclick="return false;">' + group.title + '</a>'));
+            li.store('ui.search.result', group);
+            this.groups.addChoice(li);
+        }.bind(this));
+        
+        this.advice = new Element('div', {'class': 'UI_Recipients_Advice'}).hide();
+        this.advice.update(Element('span').update('Search for person or speak to ... '));
+        this.advice.insert(this.groups);
+        $(this.element).up().insert(this.advice);
+    
+        
+        this.defaultValue =  this.options.defaultValue || null;
+        
+        this.searchInput = Object.extend(this.element, { });
+        if (this.defaultValue != null && $F(this.element) == this.defaultValue) {
+            this.searchInput.addClassName('UI_Inactive');
+        }
+        
+        var element = new Element('div', {'class': 'UI_Recipients_Box'});
+        this.element.replace(element);
+        this.element = element;
+        this.element.insert(this.searchInput);
+        
+        this.searchResults = new Element('div', {'class': 'UI_Recipients_Search_Results'}).hide();
+        this.searchResults.update(this.menu);
+        $(this.element).up().insert(this.searchResults);
+        
+        Object.extend(this.searchInput, {
+            onkeyup: function(event){
+                event = event || window.event;
+                this.onSearchKeyup(event);        
+            }.bind(this),
+            onkeydown: function(event){
+                event = event || window.event;
+                this.onSearchKeydown(event);        
+            }.bind(this),
+            onfocus: function(event) {
+                event = event || window.event;
+                this.onSearchFocus(event);
+            }.bind(this),
+            onblur: function(event) {
+                event = event || window.event;
+                this.onSearchBlur(event);
+            }.bind(this)
+        });
+        
+        this.observers = {
+                selectedKeypress: this.selectedKeypress.bind(this),
+        };
+    },    
+    open: function() {
+        this.menu.open();
+        this.searchResults.show();      
+    },    
+    close: function() {
+        this.menu.close();
+        this.searchResults.hide();
+    },
+    openAdvice: function() {
+        this.groups.open();
+        this.advice.show();      
+    },    
+    closeAdvice: function() {
+        this.groups.close();
+        this.advice.hide();
+    },
+    getSearchValue: function(){
+        return $F(this.searchInput);  
+    },      
+    onSearchKeyup: function(event) {
+        var value = this.getSearchValue();
+        
+        if (value) {
+            if (value.blank() || value.length < this.options.minCharacters || value == this.defaultValue) {
+                // Empty values mean the menu should be hidden and all timers
+                // should be unscheduled.
+                this.close();
+                this.unschedule();
+                this.searchValue = '';
+                return;
+            }
+        
+            if (value !== this.searchValue) {
+                // Value has changed.
+                this.schedule();          
+            }
+        } else {
+            this.close();
+            this.unschedule();
+        }
+      
+        this.searchValue = value;
+    },      
+    onSearchKeydown: function(event) {
+        if (S2.UI.modifierUsed(event)) return;
+        
+        var keyCode = event.keyCode || event.charCode;
+        if (this.menu.isOpen()) {
+            switch (keyCode) {
+                case Event.KEY_UP:
+                    this.menu.moveHighlight(-1);
+                    Event.stop(event);
+                    break;
+                case Event.KEY_DOWN:
+                    this.menu.moveHighlight(1);
+                    Event.stop(event);
+                    break;    
+                case Event.KEY_TAB:
+                    this.menu.selectChoice();
+                    this.close();
+                    this.unschedule();
+                    this.searchValue = '';
+              
+                    this.searchInput.setValue('');
+                    this.searchInput.focus();
+                    Event.stop(event);
+                    break;
+                case Event.KEY_RETURN:
+                    this.menu.selectChoice();
+                    this.close();
+                    this.unschedule();
+                    this.searchValue = '';
+                    
+                    this.searchInput.setValue('');
+                    this.searchInput.focus();
+                    Event.stop(event);
+                    break;
+                case Event.KEY_ESC:
+                    this.onSearchBlur();
+                    break;
+            }
+        } else {
+            switch (keyCode) {
+                case Event.KEY_BACKSPACE:
+                    if (this.getSearchValue().length == 0) {
+                        var recipientIds = this.recipients.keys();
+                        if(recipientIds[recipientIds.length - 1] != this.selectedRecipientId){
+                            Event.stop(event);
+                            this.focusRecipient(recipientIds[recipientIds.length - 1]);
+                        }
+                    }
+                case Event.KEY_UP:
+                    this.groups.moveHighlight(-1);
+                    Event.stop(event);
+                    break;
+                case Event.KEY_DOWN:
+                    this.groups.moveHighlight(1);
+                    Event.stop(event);
+                    break;    
+                case Event.KEY_TAB:
+                case Event.KEY_RETURN:
+                    this.groups.selectChoice();
+                    Event.stop(event);
+                    break;
+                break;
+            }
+        }
+    },
+    
+    onSearchFocus: function(event) {
+        if (this.getSearchValue() == this.defaultValue) {
+            this.searchInput.setValue('');
+            this.searchInput.removeClassName('UI_Inactive');
+            this.openAdvice();
+        } else if(!this.getSearchValue().blank()) {
+            this.searchInput.focus(); 
+            this.open();
+            this.closeAdvice();
+        }       
+    },
+    
+    onSearchBlur: function(event){
+        this.close();    
+        this.closeAdvice();
+        this.unschedule();
+      
+        if (this.getSearchValue().blank()) {
+            this.reset();
+        }
+    },
+    onfocus: function() { },
+    onblur: function() { },
+    reset: function() {
+        this.searchInput.setValue(this.defaultValue);
+        this.searchInput.addClassName('UI_Inactive');
+    },    
+    schedule: function() {
+      this.unschedule();
+      this.timeout = this.change.bind(this).delay(this.options.frequency);
+    },
+    
+    unschedule: function() {
+      if(this.timeout) window.clearTimeout(this.timeout);
+    },
+    
+    change: function() {
+      this.findResults();
+    },
+    
+    findResults: function(){
+      
+      var params = { q: this.searchValue };
+      if(typeof(this.options.params) == 'function'){
+        Object.extend(params, this.options.params());
+      }else if(typeof(this.options.params) == 'object'){
+        Object.extend(params, this.options.params);
+      }
+      
+      var responseText = '{"data":{"results":[{"id":"1","title":"Thomas Schedler"},{"id":"2","title":"Thomas Reeja"},{"id":"3","title":"Thomas Manoj"},{"id":"4","title":"Schedler Thomas"}]}}';
+      this.setResults(responseText.evalJSON());
+      
+      /*
+      new Ajax.Request(this.options.requestUrl, {
+        method: 'get',
+        parameters: params,
+        onComplete: function(response) {
+          if(response.status == 200){            
+            if(response.responseJSON != undefined){
+              this.setResults(response.responseJSON);
+            }else if(response.responseText.isJSON()){
+              this.setResults(response.responseText.evalJSON());
+            }else{
+              this.setResults({ });
+            }
+          }
+        }.bind(this)
+      });*/
+    },
+    
+    setResults: function(response) {
+      if(response.data && response.data.results){
+        this.results = response.data.results;
+        this.updateResults(response.data.results);
+      }
+    },
+    
+    updateResults: function(results) {
+      
+      this.menu.clear();
+      
+      // Build a case-insensitive regexp for highlighting the substring match.
+      var needle = new RegExp(RegExp.escape(this.searchValue), 'i');
+      results.each(function(result) {
+          if(!this.recipients.get('r_u' + result.id)) {
+              var text = this.options.highlightSubstring ? result.title.replace(needle, "<b>$&</b>") : result.title;
+            
+              if (typeof(this.options.row) == 'function') {
+                  var li = this.options.row(result, text);
+              } else {
+                  var li = new Element('li', { 'class' : 'item' }).update(new Element('div', { 'class' : 'title' }).update('<a href="#" onclick="return false;">' + text + '</a>'));              
+              }
+            
+              li.store('ui.search.result', result);      
+              this.menu.addChoice(li);
+          }
+      }.bind(this));
+          
+      if (results.length === 0) {
+          this.close();
+      } else {
+          this.open();
+      }
+    },
+    
+    selected: function(event) {
+      Event.stop(event);
+      
+      var memo = event.memo, li = memo.element;
+      
+      if(li){
+        var data = li.retrieve('ui.search.result');
+        this.searchValue = data.title;
+        
+        this.close();
+        this.unschedule();
+        this.searchValue = '';
+        
+        this.searchInput.setValue('');
+        
+        this.addRecipient(data, 'r_u');
+        
+        if(typeof(this.options.selected) == 'function'){
+          this.options.selected(data);
+        }
+      }    
+    }, 
+    
+    selectedGroup: function(event) {
+        Event.stop(event);
+        
+        var memo = event.memo, li = memo.element;
+        
+        if(li){
+          var data = li.retrieve('ui.search.result');
+          this.searchValue = data.title;
+          
+          this.close();
+          this.unschedule();
+          this.searchValue = '';
+          
+          this.searchInput.setValue('');
+          
+          this.addRecipient(data, 'r_g');
+          
+          if(typeof(this.options.selected) == 'function'){
+            this.options.selected(data);
+          }
+        }    
+    }, 
+    addRecipient: function(data, idPrefix) {
+        if (!this.recipients.get(idPrefix + data.id, data)) {
+            this.recipients.set(idPrefix + data.id, data);
+            var recipient = new Element('div', { 'class': 'UI_Recipient clearfix ' + idPrefix, id: idPrefix + data.id }).update(data.title);
+            
+            var removeIcon = new Element('a', {'href': '#', 'class': 'remove'});
+            removeIcon.observe('mousedown', Event.stop);
+            removeIcon.observe('click', function(event) {
+              Event.stop(event);
+              this.removeRecipient(idPrefix + data.id);
+            }.bind(this));
+            recipient.insert(removeIcon);
+            
+            recipient.observe('mousedown', Event.stop);
+            recipient.observe('click', function(event) {
+                Event.stop(event);
+                if (this.selectedRecipientId == idPrefix + data.id) {
+                    this.blurRecipient(idPrefix + data.id);
+                } else {
+                    this.focusRecipient(idPrefix + data.id);
+                }
+              }.bind(this));
+            
+            this.searchInput.insert({ before: recipient });
+        }
+    },
+    removeRecipient: function(id) {
+        if ($(id)) {
+            this.blurRecipient(id);            
+            this.recipients.unset(id);
+            $(id).remove();
+            
+            if (this.selectedRecipientId == id) {
+                this.selectedRecipientId = null;
+            }
+            
+            this.searchInput.focus();
+        }
+    },
+    focusRecipient: function(id){
+        if ($(id)) {
+            if (this.selectedRecipientId) {
+                $(this.selectedRecipientId).removeClassName('UI_Selected');
+            }
+            
+            this.searchInput.blur();
+            
+            $(id).addClassName('UI_Selected');
+            this.selectedRecipientId = id;
+
+            Event.observe(window, 'keydown', this.observers.selectedKeypress);
+        }
+    },
+    blurRecipient: function(id){
+        $(id).removeClassName('UI_Selected');
+        this.selectedRecipientId = null;
+        Event.stopObserving(window, 'keydown', this.observers.selectedKeypress);
+    },    
+    selectedKeypress: function(event) {
+        var keyCode = event.keyCode || event.charCode;
+        
+        switch (keyCode) {
+            case Event.KEY_BACKSPACE:
+            case Event.KEY_DELETE:
+                this.removeRecipient(this.selectedRecipientId);
+                break;
+    
+            default:
+                break;
+        }
+    }
+});
+
+Object.extend(Pulss.UI.Element.Recipients, {
+    DEFAULT_OPTIONS: {
+      frequency: 0.25,
+      minCharacters: 3,      
+      highlightSubstring: true
+    }
+  }); 
+
+Pulss.UI.Element.Text = Class.create(Pulss.UI.Element, {
+    initialize: function($super, elementId, options) {
+        $super(elementId, options);
+        
+        this.defaultValue =  this.options.defaultValue || null;
+        
+        if (this.defaultValue != null && $F(this.element) == this.defaultValue) {
+            this.element.addClassName('UI_Inactive');
+        }
     }
 });
 
@@ -402,13 +867,15 @@ Pulss.UI.Element.Textarea = Class.create(Pulss.UI.Element, {
     
         var cssClasse = 'UI_Textarea ' + this.element.classNames();
         if (this.defaultValue != null && $F(this.element) == this.defaultValue) cssClasse += ' UI_Inactive';
-
-        var element = new Element('div', {'class': cssClasse, 'id': 'UI_Element_' + this.id, 'contentEditable': 'true'}).update((!$F(this.element).blank() ? $F(this.element) : '<br/>'));
+        
+        var element = new Element('div', {'class': cssClasse, 'id': 'UI_Element_' + this.id, 'contenteditable': 'true'}).update((!$F(this.element).blank() ? $F(this.element) : '<br/>'));
     
         this.parent = Object.extend(this.element, { });
 
         this.element.replace(element);
         this.element = element;
+        
+        // FIXME fallback for browsers not supporting contenteditable
     
         Object.extend(this.element, {
             onfocus: function(event) {
@@ -484,31 +951,29 @@ Pulss.UI.Element.Textarea = Class.create(Pulss.UI.Element, {
     }
 });
 
-
-
 Pulss.UI.Element.Textarea.Attachments = Class.create({
   initialize: function() {
-    this.textarea;
+    this.baseId;
     this.attachments = [];
     this.items = [];
   },
   
   init: function(){
-    if($(this.textarea.id + '_attachments') && $(this.textarea.id + '_attachment_types')){
-      this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Files(this.textarea.id, this));
-      this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Link(this.textarea.id, this));
-      this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Video(this.textarea.id, this));
-      //this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Date(this.textarea.id, this));
+    if($(this.baseId + '_attachment_types') && $(this.baseId + '_attachments')){
+      this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Files(this.baseId, this));
+      this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Link(this.baseId, this));
+      this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Video(this.baseId, this));
+      //this.attachments.push(new Pulss.UI.Element.Textarea.Attachments.Attachment.Date(this.baseId, this));
       
-      this.actionBox = new Element('div', {'class': 'icons'});
+      this.actionBox = new Element('div', {'class': 'icons clearfix'});
       this.attachments.each(function(attachment){
         this.actionBox.insert(attachment.getActionIcon());
       }.bind(this));
       
-      $(this.textarea.id + '_attachment_types').update(this.actionBox);   
+      $(this.baseId + '_attachment_types').update(new Element('div', {'class': 'lbl'}).update(Pulss.Locale.Translate._('Attach') + ':'));
+      $(this.baseId + '_attachment_types').insert(this.actionBox);      
       
-      this.container = new Element('div', {'id': this.textarea.id + '_attachments', 'class': 'attachments'}); 
-      $(this.textarea.id + '_attachments').insert({before: this.container});         
+      this.container = $(this.baseId + '_attachments');         
     }  
   },
 
@@ -730,7 +1195,7 @@ Pulss.UI.Element.Textarea.Attachments.Attachment.Files = Class.create(Pulss.UI.E
     
     this.box.insert(this.head);
     
-    this.attachmentContainer = new Element('div', {'class': 'attachment'});
+    this.attachmentContainer = new Element('div', {'class': 'attachment clearfix'});
     
     this.fileContainer = new Element('div', {'class': 'entry'});
     this.form = new Element('form', {'method': 'post', 'enctype': 'multipart/form-data'});
@@ -880,7 +1345,7 @@ Pulss.UI.Element.Textarea.Attachments.Attachment.Link = Class.create(Pulss.UI.El
     
     this.box.insert(this.head);
     
-    this.attachmentContainer = new Element('div', {'class': 'attachment'});
+    this.attachmentContainer = new Element('div', {'class': 'attachment clearfix'});
     
     this.entryContainer = new Element('div', {'class': 'entry'});
     this.entry = new Element('input', {'type': 'text', 'value': 'http://'});
@@ -1027,7 +1492,7 @@ Pulss.UI.Element.Textarea.Attachments.Attachment.Video = Class.create(Pulss.UI.E
 
     this.box.insert(this.head);
 
-    this.attachmentContainer = new Element('div', {'class': 'attachment'});
+    this.attachmentContainer = new Element('div', {'class': 'attachment clearfix'});
 
     this.entryUrlContainer = new Element('div', {'class': 'entry'});
     //this.entryUrlContainer.insert(new Element('div', {'class': 'info'}).update(Pulss.Locale.Translate._('Video_url')));
@@ -1090,7 +1555,7 @@ Pulss.UI.Element.Textarea.Attachments.Attachment.Date = Class.create(Pulss.UI.El
 
     this.box.insert(this.head);
 
-    this.attachmentContainer = new Element('div', {'class': 'attachment'});
+    this.attachmentContainer = new Element('div', {'class': 'attachment clearfix'});
 
     this.entryContainer = new Element('div', {'class': 'entry'});
     this.startDate = new Pulss.UI.Element.Datetime('attachment_date_start', {});

@@ -201,7 +201,6 @@ h1 { font-size: 18px; line-height: 24px; font-weight: bold; padding: 0 0 5px 0; 
 
 h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0; }
 
-
 /*-------------------------
   Main wrapper */
 
@@ -318,7 +317,7 @@ h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0
 
 .secondary .second { width: 40%; float: left; }
 
-.secondary .share { position: relative; z-index: 10; height: auto; min-height: 125px; }
+.secondary .share { position: relative; z-index: 15; height: auto; min-height: 125px; }
 
 .secondary .divider { padding:  0 0 20px 0; position: relative; z-index: 5; }
 
@@ -336,7 +335,7 @@ h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0
 
 .first .head { padding: 10px 0 0 20px; }
 
-.first .box { background-color: #e6e6e6; padding: 5px 23px 10px 10px; margin: 10px 20px 10px 20px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
+.first .box { background-color: #e6e6e6; padding: 5px 10px 10px 10px; margin: 10px 20px 10px 20px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
 
 .head .logo { width: 70px; height: 70px; margin: 0 10px 0 0; padding: 0; float: left; }
 
@@ -348,7 +347,7 @@ h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0
 
 .share .row { padding: 0 0 10px 0; position: relative; z-index: 10; }
 
-.share .lbl { width: 40px; text-align: right; padding: 0 10px 0 0; font-size: 11px; color: #999; line-height: 20px; float: left; }
+.share .lbl { width: 40px; text-align: right; padding: 0 5px 0 0; font-size: 11px; color: #999; line-height: 20px; float: left; }
 
 .share label { font-size: 11px; color: #999; line-height: 20px; }
 
@@ -356,13 +355,7 @@ h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0
 
 /* share attachments */
 
-.share .attachment { float: left; width: 150px; }
-
-.share .attachment .lbl { float: left; }
-
-.share .attachment .types { float: left; width: 100px; }
-
-.share .attachment .icons { }
+.share .icons { float: left; }
 
 .share .icons a { background: url("/img/icons16.png") no-repeat; display: block; float: left; height: 20px; margin: 0 1px 0 0; width: 20px; }
 
@@ -632,7 +625,6 @@ h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0
 .clearfix { zoom: 1; }
 
 
-
 /* =============================================================================
    PLACEHOLDER Media Queries for Responsive Design.
    These override the primary ('mobile first') styles
@@ -646,7 +638,7 @@ h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0
 
 @media only screen and (min-width: 768px) {
   /* Style adjustments for viewports 768px and over go here */
-
+  
 }
 
 
