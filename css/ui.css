@@ -238,7 +238,7 @@
 
 .UI_Recipients { float: left; border: 0; width: 150px; line-height: 20px; height: 20px; padding: 0; margin: 0 0 5px 0; }
 
-.ie7 .UI_Recipients { float: none; } <!-- IE7 FIX -->
+.ie7 .UI_Recipients { float: none; } /* IE7 FIX */
 
 .UI_Recipients.UI_Inactive { color: #1f6992; cursor: pointer; font-size: 11px; background: url('/img/icons16.png') no-repeat -20px -280px; padding: 0 0 0 20px; }
 
