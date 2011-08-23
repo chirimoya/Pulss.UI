@@ -201,6 +201,8 @@ h1 { font-size: 18px; line-height: 24px; font-weight: bold; padding: 0 0 5px 0; 
 
 h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0; }
 
+.buffer, .blind { position: absolute; display: none; height: 1; width: 1; top: 0; left: 0; }
+
 /*-------------------------
   Main wrapper */
 

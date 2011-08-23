@@ -328,7 +328,7 @@ Pulss.UI.Module.Message = Class.create(Pulss.UI.Module, {
             baseId: this.element.id,
             selected: this.recipientSelected.bind(this),
             defaultValue: this.options.defaultValues.recipient,
-            groups: '[{"id":"1","title":"Everyone in this group"}]'.evalJSON()
+            groups: [{id: '1', title: Pulss.Locale.Translate._('Everyone_in_this_group')}] //FIXME GroupId
         });
     },
     recipientSelected: function() {
@@ -439,411 +439,412 @@ Pulss.UI.Element.Datetime = Class.create(Pulss.UI.Element, {
     }
 });
 
-Pulss.UI.Element.Recipients = Class.create(Pulss.UI.Element, {
-    initialize: function($super, elementId, options) {
-        $super(elementId, Pulss.UI.Element.Recipients.DEFAULT_OPTIONS);    
-        Object.extend(this.options, options || { });
-        
-        this.recipients = $H();
-        
-        this.menu = new S2.UI.Menu();
-        this.menu.options.closeOnOutsideClick = false;
-        this.menu.observe('ui:menu:selected', this.selected.bind(this));
-        
-        this.groups = new S2.UI.Menu();
-        this.groups.options.closeOnOutsideClick = false;
-        this.groups.observe('ui:menu:selected', this.selectedGroup.bind(this));
-        
-        this.options.groups.each(function(group){
-            var li = new Element('li', { 'class' : 'item' }).update(new Element('div', { 'class' : 'title' }).update('<a href="#" onclick="return false;">' + group.title + '</a>'));
-            li.store('ui.search.result', group);
-            this.groups.addChoice(li);
-        }.bind(this));
-        
-        this.advice = new Element('div', {'class': 'UI_Recipients_Advice'}).hide();
-        this.advice.update(Element('span').update('Search for person or speak to ... '));
-        this.advice.insert(this.groups);
-        $(this.element).up().insert(this.advice);
+(function(UI) {
+    UI.Element.Recipients = Class.create(UI.Element, {
+        initialize: function($super, elementId, options) {
+            $super(elementId, UI.Element.Recipients.DEFAULT_OPTIONS);    
+            Object.extend(this.options, options || { });
+            
+            this.recipients = $H();
+            
+            this.members = new S2.UI.Menu();
+            this.members.options.closeOnOutsideClick = false;
+            this.members.observe('ui:menu:selected', this.selectedMember.bind(this));
+                    
+            this.groups = new S2.UI.Menu();
+            this.groups.options.closeOnOutsideClick = false;
+            this.groups.observe('ui:menu:selected', this.selectedGroup.bind(this));
+            
+            this.options.groups.each(function(group) {
+                var li = new Element('li', { 'class' : 'item' }).update(new Element('div', { 'class' : 'title' }).update('<a href="#" onclick="return false;">' + group.title + '</a>'));
+                li.store('ui.search.result', group);
+                this.groups.addChoice(li);
+            }.bind(this));
+            
+            this.defaultValue =  this.options.defaultValue || null;
     
-        
-        this.defaultValue =  this.options.defaultValue || null;
-        
-        this.searchInput = Object.extend(this.element, { });
-        if (this.defaultValue != null && $F(this.element) == this.defaultValue) {
+            this.searchInput = Object.extend(this.element, { });
+            if (this.defaultValue != null && $F(this.element) == this.defaultValue) {
+                this.searchInput.addClassName('UI_Inactive');
+            }
+            
+            var element = new Element('div', {'class': 'UI_Recipients_Box clearfix'});
+            this.element.replace(element);
+            this.element = element;
+            this.element.insert(this.searchInput);
+            
+            this.searchResults = new Element('div', {'class': 'UI_Recipients_Search_Results'}).hide();
+            this.searchResults.update(this.members);
+            $(this.element).up().insert(this.searchResults);
+            
+            this.advice = new Element('div', {'class': 'UI_Recipients_Advice'}).hide();
+            this.adviceInfo = new Element('span');
+            this.advice.update(this.adviceInfo);
+            this.advice.insert(this.groups);
+            $(this.element).up().insert(this.advice);
+            this.groups.selectChoice(0);
+            this.onSearchBlur();            
+            
+            Object.extend(this.searchInput, {
+                onkeyup: function(event){
+                    event = event || window.event;
+                    this.onSearchKeyup(event);        
+                }.bind(this),
+                onkeydown: function(event){
+                    event = event || window.event;
+                    this.onSearchKeydown(event);        
+                }.bind(this),
+                onfocus: function(event) {
+                    event = event || window.event;
+                    this.onSearchFocus(event);
+                }.bind(this),
+                onblur: function(event) {
+                    event = event || window.event;
+                    this.onSearchBlur(event);
+                }.bind(this)
+            });
+            
+            this.observers = {
+                selectedKeypress: this.selectedKeypress.bind(this)
+            };
+        },    
+        open: function() {
+            this.closeAdvice();
+            this.members.open();
+            this.searchResults.show();      
+        },    
+        close: function() {
+            this.members.close();
+            this.searchResults.hide();
+        },
+        openAdvice: function() {
+            this.advice.show();      
+        },    
+        closeAdvice: function() {
+            this.advice.hide();
+        },
+        noMoreGroupsToSelect: function() {
+            this.groups.close();
+            this.adviceInfo.update(Pulss.Locale.Translate._('Search_for_person_'));
+        },
+        resetGroupsToSelect: function() {
+            this.groups.open();
+            this.adviceInfo.update(Pulss.Locale.Translate._('Search_for_person_or_speak_to_'));
+            
+        },
+        getSearchValue: function(){
+            return $F(this.searchInput);  
+        },      
+        onSearchKeyup: function(event) {
+            var value = this.getSearchValue();
+            
+            if (value) {
+                if (value.blank() || value.length < this.options.minCharacters || value == this.defaultValue) {
+                    // Empty values mean the menu should be hidden and all timers
+                    // should be unscheduled.
+                    this.close();
+                    this.unschedule();
+                    this.searchValue = '';
+                    return;
+                }
+            
+                if (value !== this.searchValue) {
+                    // Value has changed.
+                    this.schedule();          
+                }
+            } else {
+                this.close();
+                this.unschedule();
+            }
+          
+            this.searchValue = value;
+        },      
+        onSearchKeydown: function(event) {
+            if (S2.UI.modifierUsed(event)) return;
+            
+            var keyCode = event.keyCode || event.charCode;
+            if (this.members.isOpen()) {
+                switch (keyCode) {
+                    case Event.KEY_UP:
+                        this.members.moveHighlight(-1);
+                        Event.stop(event);
+                        break;
+                    case Event.KEY_DOWN:
+                        this.members.moveHighlight(1);
+                        Event.stop(event);
+                        break;    
+                    case Event.KEY_TAB:
+                        this.members.selectChoice();
+                        this.close();
+                        this.unschedule();
+                        this.searchValue = '';
+                  
+                        this.searchInput.setValue('');
+                        this.searchInput.focus();
+                        Event.stop(event);
+                        break;
+                    case Event.KEY_RETURN:
+                        this.members.selectChoice();
+                        this.close();
+                        this.unschedule();
+                        this.searchValue = '';
+                        
+                        this.searchInput.setValue('');
+                        this.searchInput.focus();
+                        Event.stop(event);
+                        break;
+                    case Event.KEY_ESC:
+                        this.onSearchBlur();
+                        break;
+                }
+            } else {
+                switch (keyCode) {
+                    case Event.KEY_BACKSPACE:
+                        if (this.getSearchValue().length == 0) {
+                            var recipientIds = this.recipients.keys();
+                            if(recipientIds[recipientIds.length - 1] != this.selectedRecipientId){
+                                Event.stop(event);
+                                this.focusRecipient(recipientIds[recipientIds.length - 1]);
+                            }
+                        }
+                        break;
+                    case Event.KEY_UP:
+                        this.groups.moveHighlight(-1);
+                        Event.stop(event);
+                        break;
+                    case Event.KEY_DOWN:
+                        this.groups.moveHighlight(1);
+                        Event.stop(event);
+                        break;    
+                    case Event.KEY_TAB:
+                    case Event.KEY_RETURN:
+                        this.groups.selectChoice();
+                        Event.stop(event);
+                        break;
+                }
+            }
+        },    
+        onSearchFocus: function(event) {
+            this.openAdvice();
+            
+            if (this.selectedRecipientId) {
+                this.blurRecipient(this.selectedRecipientId);
+            }
+            
+            if (this.getSearchValue() == this.defaultValue) {
+                this.searchInput.setValue('');
+                this.searchInput.removeClassName('UI_Inactive');            
+            } else if(!this.getSearchValue().blank()) {
+                this.searchInput.focus(); 
+                this.open();
+            }       
+        },    
+        onSearchBlur: function(event){
+            this.close();    
+            this.closeAdvice();
+            this.unschedule();
+          
+            if (this.getSearchValue().blank()) {
+                this.reset();
+            }
+        },
+        onfocus: function() { },
+        onblur: function() { },
+        reset: function() {
+            this.searchInput.setValue(this.defaultValue);
             this.searchInput.addClassName('UI_Inactive');
-        }
-        
-        var element = new Element('div', {'class': 'UI_Recipients_Box'});
-        this.element.replace(element);
-        this.element = element;
-        this.element.insert(this.searchInput);
-        
-        this.searchResults = new Element('div', {'class': 'UI_Recipients_Search_Results'}).hide();
-        this.searchResults.update(this.menu);
-        $(this.element).up().insert(this.searchResults);
-        
-        Object.extend(this.searchInput, {
-            onkeyup: function(event){
-                event = event || window.event;
-                this.onSearchKeyup(event);        
-            }.bind(this),
-            onkeydown: function(event){
-                event = event || window.event;
-                this.onSearchKeydown(event);        
-            }.bind(this),
-            onfocus: function(event) {
-                event = event || window.event;
-                this.onSearchFocus(event);
-            }.bind(this),
-            onblur: function(event) {
-                event = event || window.event;
-                this.onSearchBlur(event);
-            }.bind(this)
-        });
-        
-        this.observers = {
-                selectedKeypress: this.selectedKeypress.bind(this),
-        };
-    },    
-    open: function() {
-        this.menu.open();
-        this.searchResults.show();      
-    },    
-    close: function() {
-        this.menu.close();
-        this.searchResults.hide();
-    },
-    openAdvice: function() {
-        this.groups.open();
-        this.advice.show();      
-    },    
-    closeAdvice: function() {
-        this.groups.close();
-        this.advice.hide();
-    },
-    getSearchValue: function(){
-        return $F(this.searchInput);  
-    },      
-    onSearchKeyup: function(event) {
-        var value = this.getSearchValue();
-        
-        if (value) {
-            if (value.blank() || value.length < this.options.minCharacters || value == this.defaultValue) {
-                // Empty values mean the menu should be hidden and all timers
-                // should be unscheduled.
+        },    
+        schedule: function() {
+            this.unschedule();
+            this.timeout = this.change.bind(this).delay(this.options.frequency);
+        },    
+        unschedule: function() {
+            if (this.timeout) window.clearTimeout(this.timeout);
+        },    
+        change: function() {
+            this.findResults();
+        },    
+        findResults: function(){
+            var params = { q: this.searchValue };
+            
+            if (typeof(this.options.params) == 'function') {
+                Object.extend(params, this.options.params());
+            } else if (typeof(this.options.params) == 'object') {
+                Object.extend(params, this.options.params);
+            }
+            
+            var responseText = '{"data":{"results":[{"id":"1","title":"Thomas Schedler"},{"id":"2","title":"Thomas Reeja"},{"id":"3","title":"Thomas Manoj"},{"id":"4","title":"Schedler Thomas"}]}}';
+            this.setResults(responseText.evalJSON());
+            
+            /*
+            new Ajax.Request(this.options.requestUrl, {
+                method: 'get',
+                parameters: params,
+                onComplete: function(response) {
+                    if (response.status == 200) {
+                        if (response.responseJSON != undefined) {
+                            this.setResults(response.responseJSON);
+                        } else if (response.responseText.isJSON()) {
+                            this.setResults(response.responseText.evalJSON());
+                        } else {
+                            this.setResults({ });
+                        }
+                    }
+                }.bind(this)
+            });
+            */
+        },    
+        setResults: function(response) {
+            if (response.data && response.data.results) {
+                this.results = response.data.results;
+                this.updateResults(response.data.results);
+            }
+        },    
+        updateResults: function(results) {
+            
+            this.members.clear();
+            
+            // Build a case-insensitive regexp for highlighting the substring match.
+            var needle = new RegExp(RegExp.escape(this.searchValue), 'i');
+            results.each(function(result) {
+                if (!this.recipients.get('r_m' + result.id)) {
+                    var text = this.options.highlightSubstring ? result.title.replace(needle, '<b>$&</b>') : result.title;
+                    
+                    var li = new Element('li', { 'class' : 'item' }).update(new Element('div', { 'class' : 'title' }).update('<a href="#" onclick="return false;">' + text + '</a>'));
+                    if (typeof(this.options.row) == 'function') {
+                        li = this.options.row(result, text);
+                    }
+                    
+                    li.store('ui.search.result', result);
+                    this.members.addChoice(li);
+                }
+            }.bind(this));
+              
+            if (results.length === 0) {
+                this.close();
+            } else {
+                this.open();
+            }
+        },    
+        selected: function(event, idPrefix) {
+          
+            var memo = event.memo, li = memo.element;
+          
+            if (li) {
+                var data = li.retrieve('ui.search.result');
+                this.searchValue = data.title;
+            
                 this.close();
                 this.unschedule();
                 this.searchValue = '';
-                return;
-            }
-        
-            if (value !== this.searchValue) {
-                // Value has changed.
-                this.schedule();          
-            }
-        } else {
-            this.close();
-            this.unschedule();
-        }
-      
-        this.searchValue = value;
-    },      
-    onSearchKeydown: function(event) {
-        if (S2.UI.modifierUsed(event)) return;
-        
-        var keyCode = event.keyCode || event.charCode;
-        if (this.menu.isOpen()) {
-            switch (keyCode) {
-                case Event.KEY_UP:
-                    this.menu.moveHighlight(-1);
-                    Event.stop(event);
-                    break;
-                case Event.KEY_DOWN:
-                    this.menu.moveHighlight(1);
-                    Event.stop(event);
-                    break;    
-                case Event.KEY_TAB:
-                    this.menu.selectChoice();
-                    this.close();
-                    this.unschedule();
-                    this.searchValue = '';
-              
-                    this.searchInput.setValue('');
-                    this.searchInput.focus();
-                    Event.stop(event);
-                    break;
-                case Event.KEY_RETURN:
-                    this.menu.selectChoice();
-                    this.close();
-                    this.unschedule();
-                    this.searchValue = '';
-                    
-                    this.searchInput.setValue('');
-                    this.searchInput.focus();
-                    Event.stop(event);
-                    break;
-                case Event.KEY_ESC:
-                    this.onSearchBlur();
-                    break;
-            }
-        } else {
-            switch (keyCode) {
-                case Event.KEY_BACKSPACE:
-                    if (this.getSearchValue().length == 0) {
-                        var recipientIds = this.recipients.keys();
-                        if(recipientIds[recipientIds.length - 1] != this.selectedRecipientId){
-                            Event.stop(event);
-                            this.focusRecipient(recipientIds[recipientIds.length - 1]);
-                        }
-                    }
-                case Event.KEY_UP:
-                    this.groups.moveHighlight(-1);
-                    Event.stop(event);
-                    break;
-                case Event.KEY_DOWN:
-                    this.groups.moveHighlight(1);
-                    Event.stop(event);
-                    break;    
-                case Event.KEY_TAB:
-                case Event.KEY_RETURN:
-                    this.groups.selectChoice();
-                    Event.stop(event);
-                    break;
-                break;
-            }
-        }
-    },
-    
-    onSearchFocus: function(event) {
-        if (this.getSearchValue() == this.defaultValue) {
-            this.searchInput.setValue('');
-            this.searchInput.removeClassName('UI_Inactive');
-            this.openAdvice();
-        } else if(!this.getSearchValue().blank()) {
-            this.searchInput.focus(); 
-            this.open();
-            this.closeAdvice();
-        }       
-    },
-    
-    onSearchBlur: function(event){
-        this.close();    
-        this.closeAdvice();
-        this.unschedule();
-      
-        if (this.getSearchValue().blank()) {
-            this.reset();
-        }
-    },
-    onfocus: function() { },
-    onblur: function() { },
-    reset: function() {
-        this.searchInput.setValue(this.defaultValue);
-        this.searchInput.addClassName('UI_Inactive');
-    },    
-    schedule: function() {
-      this.unschedule();
-      this.timeout = this.change.bind(this).delay(this.options.frequency);
-    },
-    
-    unschedule: function() {
-      if(this.timeout) window.clearTimeout(this.timeout);
-    },
-    
-    change: function() {
-      this.findResults();
-    },
-    
-    findResults: function(){
-      
-      var params = { q: this.searchValue };
-      if(typeof(this.options.params) == 'function'){
-        Object.extend(params, this.options.params());
-      }else if(typeof(this.options.params) == 'object'){
-        Object.extend(params, this.options.params);
-      }
-      
-      var responseText = '{"data":{"results":[{"id":"1","title":"Thomas Schedler"},{"id":"2","title":"Thomas Reeja"},{"id":"3","title":"Thomas Manoj"},{"id":"4","title":"Schedler Thomas"}]}}';
-      this.setResults(responseText.evalJSON());
-      
-      /*
-      new Ajax.Request(this.options.requestUrl, {
-        method: 'get',
-        parameters: params,
-        onComplete: function(response) {
-          if(response.status == 200){            
-            if(response.responseJSON != undefined){
-              this.setResults(response.responseJSON);
-            }else if(response.responseText.isJSON()){
-              this.setResults(response.responseText.evalJSON());
-            }else{
-              this.setResults({ });
-            }
-          }
-        }.bind(this)
-      });*/
-    },
-    
-    setResults: function(response) {
-      if(response.data && response.data.results){
-        this.results = response.data.results;
-        this.updateResults(response.data.results);
-      }
-    },
-    
-    updateResults: function(results) {
-      
-      this.menu.clear();
-      
-      // Build a case-insensitive regexp for highlighting the substring match.
-      var needle = new RegExp(RegExp.escape(this.searchValue), 'i');
-      results.each(function(result) {
-          if(!this.recipients.get('r_u' + result.id)) {
-              var text = this.options.highlightSubstring ? result.title.replace(needle, "<b>$&</b>") : result.title;
             
-              if (typeof(this.options.row) == 'function') {
-                  var li = this.options.row(result, text);
-              } else {
-                  var li = new Element('li', { 'class' : 'item' }).update(new Element('div', { 'class' : 'title' }).update('<a href="#" onclick="return false;">' + text + '</a>'));              
-              }
+                this.searchInput.setValue('');
+                this.onSearchFocus();
             
-              li.store('ui.search.result', result);      
-              this.menu.addChoice(li);
-          }
-      }.bind(this));
-          
-      if (results.length === 0) {
-          this.close();
-      } else {
-          this.open();
-      }
-    },
-    
-    selected: function(event) {
-      Event.stop(event);
-      
-      var memo = event.memo, li = memo.element;
-      
-      if(li){
-        var data = li.retrieve('ui.search.result');
-        this.searchValue = data.title;
-        
-        this.close();
-        this.unschedule();
-        this.searchValue = '';
-        
-        this.searchInput.setValue('');
-        
-        this.addRecipient(data, 'r_u');
-        
-        if(typeof(this.options.selected) == 'function'){
-          this.options.selected(data);
-        }
-      }    
-    }, 
-    
-    selectedGroup: function(event) {
-        Event.stop(event);
-        
-        var memo = event.memo, li = memo.element;
-        
-        if(li){
-          var data = li.retrieve('ui.search.result');
-          this.searchValue = data.title;
-          
-          this.close();
-          this.unschedule();
-          this.searchValue = '';
-          
-          this.searchInput.setValue('');
-          
-          this.addRecipient(data, 'r_g');
-          
-          if(typeof(this.options.selected) == 'function'){
-            this.options.selected(data);
-          }
-        }    
-    }, 
-    addRecipient: function(data, idPrefix) {
-        if (!this.recipients.get(idPrefix + data.id, data)) {
-            this.recipients.set(idPrefix + data.id, data);
-            var recipient = new Element('div', { 'class': 'UI_Recipient clearfix ' + idPrefix, id: idPrefix + data.id }).update(data.title);
+                this.addRecipient(data, idPrefix);
             
-            var removeIcon = new Element('a', {'href': '#', 'class': 'remove'});
-            removeIcon.observe('mousedown', Event.stop);
-            removeIcon.observe('click', function(event) {
-              Event.stop(event);
-              this.removeRecipient(idPrefix + data.id);
-            }.bind(this));
-            recipient.insert(removeIcon);
-            
-            recipient.observe('mousedown', Event.stop);
-            recipient.observe('click', function(event) {
-                Event.stop(event);
-                if (this.selectedRecipientId == idPrefix + data.id) {
-                    this.blurRecipient(idPrefix + data.id);
-                } else {
-                    this.focusRecipient(idPrefix + data.id);
+                if(typeof(this.options.selected) == 'function'){
+                    this.options.selected(data);
                 }
-              }.bind(this));
-            
-            this.searchInput.insert({ before: recipient });
-        }
-    },
-    removeRecipient: function(id) {
-        if ($(id)) {
-            this.blurRecipient(id);            
-            this.recipients.unset(id);
-            $(id).remove();
-            
+            }    
+        },
+        selectedMember: function(event) {
+            Event.stop(event);
+            this.selected(event, 'r_m');
+        },
+        selectedGroup: function(event) {
+            Event.stop(event);
+            this.selected(event, 'r_g');
+            if (this.groups.choices.length == 1) {
+                this.noMoreGroupsToSelect();
+            }
+        },
+        addRecipient: function(data, idPrefix) {
+            if (!this.recipients.get(idPrefix + data.id, data)) {
+                this.recipients.set(idPrefix + data.id, data);
+                var recipient = new Element('div', { 'class': 'UI_Recipient clearfix ' + idPrefix, id: idPrefix + data.id }).update(data.title);
+                
+                var removeIcon = new Element('a', {'href': '#', 'class': 'remove'});
+                removeIcon.observe('mousedown', Event.stop);
+                removeIcon.observe('click', function(event) {
+                  Event.stop(event);
+                  this.removeRecipient(idPrefix + data.id);
+                }.bind(this));
+                recipient.insert(removeIcon);
+                
+                recipient.observe('mousedown', Event.stop);
+                recipient.observe('click', function(event) {
+                    Event.stop(event);
+                    if (this.selectedRecipientId == idPrefix + data.id) {
+                        this.blurRecipient(idPrefix + data.id);
+                    } else {
+                        this.focusRecipient(idPrefix + data.id);
+                    }
+                  }.bind(this));
+                
+                this.searchInput.insert({ before: recipient });
+            }
+        },
+        removeRecipient: function(id) {
+            if ($(id)) {
+                this.blurRecipient(id);            
+                this.recipients.unset(id);
+                $(id).remove();
+                
+                if (this.selectedRecipientId == id) {
+                    this.selectedRecipientId = null;
+                }
+                
+                if (id.startsWith('r_g')) {
+                    this.resetGroupsToSelect();                    
+                }
+                
+                this.searchInput.focus();
+            }
+        },
+        focusRecipient: function(id){
+            if ($(id)) {
+                if (this.selectedRecipientId) {
+                    $(this.selectedRecipientId).removeClassName('UI_Selected');
+                }
+                
+                this.searchInput.blur();
+                
+                $(id).addClassName('UI_Selected');
+                this.selectedRecipientId = id;
+    
+                Event.observe(window.document, 'keydown', this.observers.selectedKeypress);
+            }
+        },
+        blurRecipient: function(id){
+            $(id).removeClassName('UI_Selected');
             if (this.selectedRecipientId == id) {
                 this.selectedRecipientId = null;
             }
-            
-            this.searchInput.focus();
-        }
-    },
-    focusRecipient: function(id){
-        if ($(id)) {
-            if (this.selectedRecipientId) {
-                $(this.selectedRecipientId).removeClassName('UI_Selected');
-            }
-            
-            this.searchInput.blur();
-            
-            $(id).addClassName('UI_Selected');
-            this.selectedRecipientId = id;
-
-            Event.observe(window, 'keydown', this.observers.selectedKeypress);
-        }
-    },
-    blurRecipient: function(id){
-        $(id).removeClassName('UI_Selected');
-        this.selectedRecipientId = null;
-        Event.stopObserving(window, 'keydown', this.observers.selectedKeypress);
-    },    
-    selectedKeypress: function(event) {
-        var keyCode = event.keyCode || event.charCode;
-        
-        switch (keyCode) {
-            case Event.KEY_BACKSPACE:
-            case Event.KEY_DELETE:
-                this.removeRecipient(this.selectedRecipientId);
-                break;
+            Event.stopObserving(window.document, 'keydown', this.observers.selectedKeypress);
+        },    
+        selectedKeypress: function(event) {
+            var keyCode = event.keyCode || event.charCode;
     
-            default:
-                break;
+            switch (keyCode) {
+                case Event.KEY_BACKSPACE:
+                case Event.KEY_DELETE:
+                    Event.stop(event);
+                    this.removeRecipient(this.selectedRecipientId);                
+                    break;
+            }
         }
-    }
-});
+    });
+    
+    Object.extend(UI.Element.Recipients, {
+        DEFAULT_OPTIONS: {
+          frequency: 0.25,
+          minCharacters: 3,      
+          highlightSubstring: true
+        }
+    }); 
+})(Pulss.UI);
 
-Object.extend(Pulss.UI.Element.Recipients, {
-    DEFAULT_OPTIONS: {
-      frequency: 0.25,
-      minCharacters: 3,      
-      highlightSubstring: true
-    }
-  }); 
 
 Pulss.UI.Element.Text = Class.create(Pulss.UI.Element, {
     initialize: function($super, elementId, options) {
@@ -970,7 +971,7 @@ Pulss.UI.Element.Textarea.Attachments = Class.create({
         this.actionBox.insert(attachment.getActionIcon());
       }.bind(this));
       
-      $(this.baseId + '_attachment_types').update(new Element('div', {'class': 'lbl'}).update(Pulss.Locale.Translate._('Attach') + ':'));
+      $(this.baseId + '_attachment_types').update(new Element('div', {'class': 'lbl'}).update(Pulss.Locale.Translate._('Attach')));
       $(this.baseId + '_attachment_types').insert(this.actionBox);      
       
       this.container = $(this.baseId + '_attachments');         
@@ -1711,7 +1712,7 @@ Pulss.UI.Dialog = Class.create({
       this.element.setStyle({top: top  + 'px'});
     }
 
-    Event.observe(window, 'keydown', this.observers.keypress);
+    Event.observe(window.document, 'keydown', this.observers.keypress);
     this.isOpen = true;
   },
 
@@ -1724,7 +1725,7 @@ Pulss.UI.Dialog = Class.create({
     this.element.hide();
 
     this.isOpen = false;
-    Event.stopObserving(window, 'keydown', this.observers.keypress);
+    Event.stopObserving(window.document, 'keydown', this.observers.keypress);
   },
 
   keypress: function(event) {
@@ -1828,7 +1829,7 @@ Pulss.UI.Dialog.Advice = Class.create(Pulss.UI.Dialog, {
     this.element.hide();
 
     this.isOpen = false;
-    Event.stopObserving(window, 'keydown', this.observers.keypress);
+    Event.stopObserving(window.document, 'keydown', this.observers.keypress);
 
     if(typeof(this.options.onAccept) == 'function'){
       this.options.onAccept();
@@ -1892,7 +1893,7 @@ Pulss.UI.Handle = Class.create({
 
     if(this.isOpen) return;
     
-    Event.observe(window, 'keydown', this.observers.keypress);
+    Event.observe(window.document, 'keydown', this.observers.keypress);
     Event.observe(window, 'click', this.observers.click);
     this.isOpen = true;
   },
@@ -1904,7 +1905,7 @@ Pulss.UI.Handle = Class.create({
 
     if(this.options.id && $(this.options.id + '_handle')) $(this.options.id + '_handle').writeAttribute({style : ''});
 
-    Event.stopObserving(window, 'keydown', this.observers.keypress);
+    Event.stopObserving(window.document, 'keydown', this.observers.keypress);
     Event.stopObserving(window, 'click', this.observers.click);
   },
 
