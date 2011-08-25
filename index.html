@@ -423,7 +423,7 @@
     <script>
         document.observe('dom:loaded', function() {
             
-            Pulss.UI.Controller.init('message', { defaultValues: { subject: 'Title ...', message: 'Message ...', recipient: 'Add person or group' } });
+            Pulss.UI.Controller.init('message', { buttonTitle: 'Share', defaultValues: { subject: 'Title ...', message: 'Message ...', recipient: 'Add person or group' } });
         
             var count = 0;
             $$('.secondary .inner').each(function(element){

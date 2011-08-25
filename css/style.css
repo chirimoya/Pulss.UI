@@ -622,10 +622,10 @@ h4 { font-size: 14px; line-height: 20px; font-weight: normal; padding: 0 0 5px 0
 .invisible { visibility: hidden; }
 
 /* Contain floats: nicolasgallagher.com/micro-clearfix-hack/ */ 
-.clearfix:before, .clearfix:after { content: ""; display: table; }
+.clearfix:before, .clearfix:after  { content: "."; display: block; height: 0; visibility: hidden; }
+/* .clearfix:before, .clearfix:after { content: ""; display: table; } */
 .clearfix:after { clear: both; }
 .clearfix { zoom: 1; }
-
 
 /* =============================================================================
    PLACEHOLDER Media Queries for Responsive Design.
