@@ -80,8 +80,6 @@
 
 .UI_Attachments .add .attachment .action.video { top: 3.692em; }
 
-.UI_Attachments .add .attachment .action button { border: 1px solid #254f66; -webkit-border-radius: 12px; -moz-border-radius: 12px; border-radius: 12px; font-size:12px; font-family:Arial, sans-serif; color: #fff; background-color:#206a93; background-image: -moz-linear-gradient(center top, rgb(129,195,231) 0%, rgb(31,105,146) 100%); background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(129,195,231)), color-stop(1, rgb(31,105,146)) ); padding:3px 20px 3px 20px; text-align:center; cursor:pointer; height:22px; line-height:16px; }
-
 .UI_Attachments .add .attachment input { font-size: 12px; height: 22px; width: 100%; margin:0; padding: 0 5px 0 5px; -moz-border-radius: 3px; -webkit-border-radius: 3px; border-radius: 3px; border: 0; }
 
 .UI_Attachments .add .attachment .entry.video input { margin: 0 0 5px 0; }
@@ -151,6 +149,12 @@
 .UI_Tags { float: left; border: 0; width: 130px; font-size: 12px; line-height: 15px; height: 15px; padding: 0; margin: 0 0 5px 0; }
 
 .ie7 .UI_Tag { float: none; } /* IE7 FIX */
+
+.UI_Button_Container { float: right; }
+
+.UI_Button, .UI_Attachments .action button { border: 1px solid #949494; -webkit-border-radius: 11px; -moz-border-radius: 11px; border-radius: 11px; font-size:12px; font-family:Arial, sans-serif; color: #fff; background-color: #81c3e7; background-image: -moz-linear-gradient(center top, rgb(129,195,231) 0%, rgb(31,105,146) 100%); background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(129,195,231)), color-stop(1, rgb(31,105,146))); padding:3px 20px 3px 20px; text-align:center; cursor:pointer; height:22px; line-height:16px; }
+
+.UI_Button:hover, .UI_Attachments .action button:hover { background-image: -moz-linear-gradient(center top, rgb(129,195,231) 0%, rgb(15,54,94) 100%); background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, rgb(129,195,231)), color-stop(1, rgb(15,54,94))); }
 
 .UI_Input_Container { padding: 20px 20px 10px 20px; }
 

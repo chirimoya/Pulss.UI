@@ -267,7 +267,7 @@ Object.extend(Pulss.UI.Composer.Element, {
         
             this.intellisenseHooks = { };
         
-            var element = new Element('div', { 'id': 'UI_Element_' + this.id, 'class': 'UI_Message_Container' });
+            var element = new Element('div', { 'id': 'UI_Element_' + this.id, 'class': 'UI_Message_Container clearfix' });
             element.hide();
             
             Object.extend(this.element, {
@@ -307,9 +307,16 @@ Object.extend(Pulss.UI.Composer.Element, {
             if (this.placeholder.hasClassName('UI_Addon_Recipients'))
                 this.initializeRecipients();
             
-            this.button = new Element('button').update(this.options.buttonTitle);
+            this.button = new Element('button', { 'class': 'UI_Button' }).update(this.options.buttonTitle);
+            //this.button.observe('mousedown', Event.stop);
+            this.button.observe('click', function(event) {
+                Event.stop(event);
+                if (this.options.actions && typeof(this.options.actions.share) == 'function') {
+                    this.options.actions.share(this);
+                }
+            }.bind(this));
             
-            this.element.insert( { bottom: this.button } );
+            this.element.insert( { bottom: new Element('div', { 'class': 'UI_Button_Container UI_Element_Attachment_Hide' }).update(this.button) } );
             
             delete this.messageContainer;
         },
